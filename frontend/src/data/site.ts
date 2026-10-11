@@ -40,6 +40,91 @@ export const TESTIMONIALS: Testimonial[] = [
   { quote: 'Live classes, recorded backups and instant doubt clearing — it feels like having a personal tutor for every subject.', name: 'Manisha Poudel', meta: 'Class 11 · Science' },
 ]
 
+export type Batch = {
+  name: string
+  mode: 'ONLINE' | 'PHYSICAL'
+  price: number
+  was: number
+  capacity: number
+  taken: number
+  refundable: boolean
+}
+
+export type Course = {
+  slug: string
+  title: string
+  subtitle: string
+  banner: string
+  goal: string
+  batches: Batch[]
+}
+
+// Live catalogue from https://theachievers.com.np/api/courses (Oct 2026).
+// Prices in NPR. Title typo "MEDIACAL" corrected per PRD §7.5.
+export const COURSES: Course[] = [
+  {
+    slug: 'see-batch',
+    title: 'SEE Batch',
+    subtitle: 'Achieve high, work smart',
+    banner: '/courses/see.jpg',
+    goal: 'SEE',
+    batches: [
+      { name: 'SEE Online Batch', mode: 'ONLINE', price: 500, was: 700, capacity: 100, taken: 1, refundable: true },
+      { name: 'SEE Physical Batch', mode: 'PHYSICAL', price: 800, was: 1000, capacity: 100, taken: 0, refundable: true },
+    ],
+  },
+  {
+    slug: 'cee-medical-preparation',
+    title: 'CEE Medical Preparation',
+    subtitle: "Sudurpaschim's best learning platform",
+    banner: '/courses/cee.jpg',
+    goal: 'CEE',
+    batches: [
+      { name: 'Neuron Batch', mode: 'ONLINE', price: 15000, was: 25000, capacity: 100, taken: 2, refundable: false },
+      { name: 'Megha Batch', mode: 'PHYSICAL', price: 25000, was: 35000, capacity: 100, taken: 0, refundable: false },
+    ],
+  },
+  {
+    slug: 'neb-class-12',
+    title: 'NEB Class-12 Tuition (Science)',
+    subtitle: 'Prepare for board exams',
+    banner: '/courses/class12.jpg',
+    goal: 'Class 12',
+    batches: [
+      { name: 'Karishma 2.O Batch (3 Subjects)', mode: 'ONLINE', price: 9000, was: 10000, capacity: 100, taken: 0, refundable: false },
+      { name: 'Karishma Batch (3 Subjects)', mode: 'PHYSICAL', price: 15000, was: 17000, capacity: 100, taken: 0, refundable: false },
+    ],
+  },
+  {
+    slug: 'class-11-science',
+    title: 'Class-11 Tuition (Science)',
+    subtitle: "Sudurpaschim's best learning platform",
+    banner: '/courses/class11.jpg',
+    goal: 'Class 11',
+    batches: [
+      { name: 'Sankalpa 2.O Batch (3 Subject)', mode: 'ONLINE', price: 9000, was: 10000, capacity: 100, taken: 1, refundable: false },
+      { name: 'Sankalpa Batch (3 Subjects)', mode: 'PHYSICAL', price: 15000, was: 17000, capacity: 100, taken: 0, refundable: false },
+    ],
+  },
+  {
+    slug: 'ioe-entrance',
+    title: 'IOE Entrance Preparation',
+    subtitle: "Nepal's best entrance prep, online & physical",
+    banner: '/courses/ioe.jpg',
+    goal: 'IOE',
+    batches: [
+      { name: 'Pragati 2.0 Batch', mode: 'ONLINE', price: 8000, was: 15000, capacity: 100, taken: 1, refundable: false },
+      { name: 'Pragati Batch', mode: 'PHYSICAL', price: 15000, was: 25000, capacity: 100, taken: 0, refundable: false },
+    ],
+  },
+]
+
+export const WHATSAPP_NUMBER = 'https://wa.me/9779810686665'
+
+export function whatsappEnquiry(course: string, batch: string) {
+  return `${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Namaste! I want to enroll in ${batch} (${course}).`)}`
+}
+
 export type Faq = { q: string; a: string }
 
 export const FAQS: Faq[] = [

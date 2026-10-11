@@ -1,17 +1,62 @@
+import { useState } from 'react'
 import Page from './Page'
+import CourseCard from '../components/CourseCard'
+import { COURSES } from '../data/site'
+
+const MODES = ['All', 'ONLINE', 'PHYSICAL'] as const
 
 export default function Courses() {
+  const [mode, setMode] = useState<(typeof MODES)[number]>('All')
+  const [query, setQuery] = useState('')
+
+  const q = query.trim().toLowerCase()
+  const list = COURSES.filter((c) => {
+    const modeOk = mode === 'All' || c.batches.some((b) => b.mode === mode)
+    const qOk =
+      !q ||
+      c.title.toLowerCase().includes(q) ||
+      c.subtitle.toLowerCase().includes(q) ||
+      c.goal.toLowerCase().includes(q) ||
+      c.batches.some((b) => b.name.toLowerCase().includes(q))
+    return modeOk && qOk
+  })
+
   return (
     <Page
-      kicker="PRD C-01 / C-02"
+      kicker="Catalog · PRD C-01 / C-02"
       title="Courses"
-      lead="Catalogue with online / physical filter and goal filter (SEE, Class 11, Class 12, CEE, IOE). Full cards land with the course build."
+      lead="Online and physical batches with limited seats — live prices from the institute catalogue."
     >
-      <div className="ta-cards">
-        <div className="ta-card"><span className="ta-badge">Online</span><h2>SEE Online — NPR 500</h2><p>Placeholder — wired to /api/v1/courses next.</p></div>
-        <div className="ta-card"><span className="ta-badge">Online</span><h2>CEE Neuron — NPR 15,000</h2><p>Tutors: D. Thapa, S. Airi, P. Saud.</p></div>
-        <div className="ta-card"><span className="ta-badge">Physical</span><h2>IOE Pragati — NPR 15,000</h2><p>Physical batch, 100 seats.</p></div>
+      <div className="ta-filters" role="group" aria-label="Filter by mode">
+        {MODES.map((m) => (
+          <button
+            key={m}
+            type="button"
+            className={`ta-chip${mode === m ? ' is-active' : ''}`}
+            aria-pressed={mode === m}
+            onClick={() => setMode(m)}
+          >
+            {m === 'All' ? 'All modes' : m === 'ONLINE' ? 'Online' : 'Physical'}
+          </button>
+        ))}
       </div>
+      <input
+        type="search"
+        className="ta-search"
+        placeholder="Search courses or batches…"
+        aria-label="Search courses"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      {list.length === 0 ? (
+        <p className="ta-empty">No courses match your search.</p>
+      ) : (
+        <div className="ta-course-grid">
+          {list.map((c) => (
+            <CourseCard key={c.slug} course={c} />
+          ))}
+        </div>
+      )}
     </Page>
   )
 }
