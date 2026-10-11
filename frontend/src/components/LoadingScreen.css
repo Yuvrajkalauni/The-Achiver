@@ -45,6 +45,16 @@
   color: #fff;
 }
 
+.ta-loader__logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 16px;
+  background: #fff;
+  padding: 6px;
+  display: block;
+}
+
 .ta-loader__ring {
   position: absolute;
   inset: -8px;

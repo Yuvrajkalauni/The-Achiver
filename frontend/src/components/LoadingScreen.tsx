@@ -67,7 +67,13 @@ export default function LoadingScreen({ onDone, minVisibleMs = 1800 }: Props) {
     >
       <div className="ta-loader__card">
         <div className="ta-loader__mark" aria-hidden="true">
-          <span className="ta-loader__mark-letter">A</span>
+          <img
+            src="/logo.jpg"
+            alt=""
+            className="ta-loader__logo"
+            width={120}
+            height={120}
+          />
           <span className="ta-loader__ring" />
         </div>
         <p className="ta-loader__brand">The Achievers</p>

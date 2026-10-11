@@ -17,12 +17,14 @@ export default function Navbar() {
   return (
     <header className="ta-nav">
       <div className="ta-nav__inner">
-        <NavLink to="/" className="ta-nav__brand" aria-label="The Achievers — home">
-          <span className="ta-nav__logo" aria-hidden="true">A</span>
-          <span className="ta-nav__name">
-            The Achievers
-            <small>Institute of Learning</small>
-          </span>
+        <NavLink to="/" className="ta-nav__brand" aria-label="The Achievers Institute of Learning — home">
+          <img
+            src="/logo.jpg"
+            alt="The Achievers Institute of Learning logo"
+            className="ta-nav__logo-img"
+            width={120}
+            height={52}
+          />
         </NavLink>
 
         <button
