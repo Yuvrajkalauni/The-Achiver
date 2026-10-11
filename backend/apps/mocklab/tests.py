@@ -1,10 +1,8 @@
 """Unit tests: validator, scoring, and the one-answer-per-question rule."""
-import json
 import random
 
-from django.test import Client, TestCase
+from django.test import TestCase
 
-from .jobs import score_round
 from .models import LabAnswer, LabAttempt, LabQuestion, LabTest
 from .validation import normalize, randomize_options, score_attempt, validate_question
 
@@ -88,59 +86,3 @@ class SingleAnswerRuleTests(TestCase):
         LabAnswer.objects.update_or_create(attempt=attempt, question=q, defaults={"selected": 1})
         LabAnswer.objects.update_or_create(attempt=attempt, question=q, defaults={"selected": None})
         self.assertIsNone(LabAnswer.objects.get(attempt=attempt, question=q).selected)
-
-
-def make_round(test, n=5, round_no=0):
-    qs = []
-    for i in range(n):
-        qs.append(
-            LabQuestion.objects.create(
-                test=test, subject="Physics", text=f"Q{i}?", options=["a", "b", "c", "d"],
-                correct_index=i % 4, explanation="E.", difficulty="easy", order=i, round_no=round_no,
-            )
-        )
-    return qs
-
-
-class RoundTests(TestCase):
-    def test_score_round_counts_five(self):
-        test = LabTest.objects.create(status="ready", total=100, generated_count=5)
-        qs = make_round(test)
-        answers = {qs[0].id: qs[0].correct_index, qs[1].id: (qs[1].correct_index + 1) % 4}
-        score, verdicts = score_round(qs, answers)
-        self.assertEqual(score, 1)
-        self.assertEqual(verdicts[qs[2].id], "unanswered")
-
-    def test_submit_round_scores_and_is_idempotent(self):
-        test = LabTest.objects.create(status="ready", total=100, generated_count=5)
-        qs = make_round(test)
-        attempt = LabAttempt.objects.create(test=test)
-        LabAnswer.objects.create(attempt=attempt, question=qs[0], selected=qs[0].correct_index)
-        client = Client()
-        first = client.post(
-            f"/api/v1/mocklab/attempts/{attempt.pk}/submit-round",
-            data=json.dumps({"round": 0}),
-            content_type="application/json",
-        )
-        self.assertEqual(first.status_code, 200)
-        self.assertEqual(first.json()["score"], 1)
-        second = client.post(
-            f"/api/v1/mocklab/attempts/{attempt.pk}/submit-round",
-            data=json.dumps({"round": 0}),
-            content_type="application/json",
-        )
-        self.assertEqual(second.status_code, 200)
-        self.assertEqual(second.json()["score"], 1)
-        attempt.refresh_from_db()
-        self.assertEqual(attempt.submitted_rounds, [0])
-
-    def test_submit_round_rejects_ungenerated_round(self):
-        test = LabTest.objects.create(status="ready", total=100, generated_count=5)
-        make_round(test)
-        attempt = LabAttempt.objects.create(test=test)
-        res = Client().post(
-            f"/api/v1/mocklab/attempts/{attempt.pk}/submit-round",
-            data=json.dumps({"round": 3}),
-            content_type="application/json",
-        )
-        self.assertEqual(res.status_code, 409)

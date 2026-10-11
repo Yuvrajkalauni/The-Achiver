@@ -320,10 +320,6 @@
 
 .ta-lab-modal__actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-.ta-lab-roundresult { margin-top: 8px; }
-
-.ta-lab-roundresult h2 { color: var(--color-heading); }
-
 /* Result */
 .ta-lab-summary {
   margin: 32px 0;
