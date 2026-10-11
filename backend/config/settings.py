@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    "apps.mocklab.apps.MocklabConfig",
 ]
 
 MIDDLEWARE = [
@@ -62,6 +63,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+        "OPTIONS": {"timeout": 30},  # background AI jobs share the dev DB
     }
 }
 # Prod: DATABASE_URL (Postgres 16) via env — wired in Phase 0 hosting decision.

@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Courses from './pages/Courses'
 import Syllabus from './pages/Syllabus'
 import MockTest from './pages/MockTest'
+import MockResult from './pages/MockResult'
 import About from './pages/About'
 import Legal from './pages/Legal'
 import Teachers from './pages/Teachers'
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/syllabus/:slug" element={<SyllabusTrack />} />
             <Route path="/syllabus" element={<Syllabus />} />
             <Route path="/mock-test" element={<MockTest />} />
+            <Route path="/mock-test/result/:attemptId" element={<MockResult />} />
             {/* PRD canonical path alias */}
             <Route path="/tests/free" element={<Navigate to="/mock-test" replace />} />
             <Route path="/about" element={<About />} />
