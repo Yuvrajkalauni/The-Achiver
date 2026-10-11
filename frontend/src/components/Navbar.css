@@ -16,7 +16,7 @@
   max-width: var(--container);
   height: 100%;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,7 +24,7 @@
 }
 
 @media (min-width: 768px) {
-  .ta-nav__inner { padding: 0 32px; }
+  .ta-nav__inner { padding: 0 20px; }
 }
 
 .ta-nav__brand {

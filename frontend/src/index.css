@@ -34,7 +34,7 @@ a:hover { color: var(--color-link-hover); }
 .ta-footer__inner {
   max-width: var(--container);
   margin: 0 auto;
-  padding: 20px 16px;
+  padding: 20px 12px;
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -43,5 +43,5 @@ a:hover { color: var(--color-link-hover); }
 }
 
 @media (min-width: 768px) {
-  .ta-footer__inner { padding: 20px 32px; }
+  .ta-footer__inner { padding: 20px 20px; }
 }

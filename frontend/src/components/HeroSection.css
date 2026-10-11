@@ -7,7 +7,7 @@
 .ta-hero__inner {
   max-width: var(--container);
   margin: 0 auto;
-  padding: 48px 16px;
+  padding: 40px 12px;
   display: grid;
   gap: 32px;
   grid-template-columns: 1fr;
@@ -17,7 +17,7 @@
 @media (min-width: 900px) {
   .ta-hero__inner {
     grid-template-columns: 1.05fr 1fr;
-    padding: 72px 32px 96px;
+    padding: 64px 20px 88px;
   }
 }
 
