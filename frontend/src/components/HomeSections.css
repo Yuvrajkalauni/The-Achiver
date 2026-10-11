@@ -103,6 +103,46 @@
 
 .ta-teacher-caption strong { color: var(--color-heading); }
 
+/* Testimonial spiral */
+.ta-spiral-wrap {
+  position: relative;
+  height: 560px;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .ta-spiral-wrap { height: 600px; }
+}
+
+.ta-spiral-quote {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.ta-spiral-quote blockquote { margin: 0; flex: 1; min-height: 0; }
+
+.ta-spiral-quote blockquote p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ta-spiral-quote figcaption { display: flex; align-items: center; gap: 10px; }
+
+.ta-spiral-quote figcaption small { color: var(--color-text-muted); }
+
 /* Testimonials */
 .ta-quote { display: flex; flex-direction: column; gap: 10px; }
 
