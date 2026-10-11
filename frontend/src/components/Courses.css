@@ -1,4 +1,4 @@
-/* Course cards — theme courseCard tokens: 16/9 image, gold badge, hover lift. */
+/* Course cards — mirror live-site catalogue cards with theme tokens. */
 .ta-course-grid {
   display: grid;
   gap: 20px;
@@ -16,7 +16,7 @@
 .ta-course-card {
   background: #fff;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(12, 65, 55, 0.08);
   display: flex;
@@ -29,33 +29,64 @@
   box-shadow: var(--shadow-lg);
 }
 
-.ta-course-media { position: relative; aspect-ratio: 16 / 9; background: var(--color-tint); }
+.ta-course-media { aspect-ratio: 16 / 9; background: var(--color-tint); }
 
 .ta-course-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.ta-course-media .ta-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
+.ta-course-body { padding: 16px 16px 20px; display: flex; flex-direction: column; }
+
+.ta-course-body h3 { margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--color-text); }
+
+.ta-course-price { margin: 8px 0 0; }
+
+.ta-course-price s { color: var(--color-text-muted); font-size: 0.9rem; margin-right: 8px; }
+
+.ta-course-price strong { color: var(--color-link); font-size: 1.25rem; font-weight: 800; }
+
+.ta-course-note { margin: 4px 0 0; font-size: 0.9rem; color: var(--color-text-muted); }
+
+.ta-course-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
 }
 
-.ta-course-body { padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.ta-course-btn:hover { background: var(--color-secondary-600); color: #fff; }
 
-.ta-course-body h3 { margin: 0; font-size: 1.2rem; color: var(--color-heading); }
+/* Detail page */
+.ta-detail-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  margin-top: 20px;
+}
 
-.ta-course-sub { margin: 0; color: var(--color-text-muted); font-size: 0.92rem; }
+@media (min-width: 900px) {
+  .ta-detail-grid { grid-template-columns: 1.2fr 1fr; align-items: start; }
+}
 
-.ta-course-from { margin: 6px 0 0; }
+.ta-detail-banner {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  display: block;
+}
 
-.ta-course-from strong { color: var(--color-heading); font-size: 1.1rem; }
-
-.ta-batch-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+.ta-batch-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 
 .ta-batch {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 14px 16px;
-  background: var(--color-page);
+  background: #fff;
 }
 
 .ta-batch-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -107,44 +138,7 @@
 
 .ta-batch-cta:hover { background: var(--color-primary-800); }
 
-.ta-course-faculty { margin-top: auto; padding-top: 14px; font-weight: 600; font-size: 0.92rem; }
-
-/* Catalogue filter (PRD C-02) */
-.ta-filters { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 20px; }
-
-.ta-chip {
-  min-height: 44px;
-  padding: 10px 20px;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid var(--color-border-strong);
-  background: #fff;
-  color: var(--color-primary);
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.ta-chip.is-active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #fff;
-}
-
-.ta-search {
-  min-height: 48px;
-  width: 100%;
-  max-width: 360px;
-  padding: 0 16px;
-  border: 1.5px solid var(--color-border-strong);
-  border-radius: var(--radius-md);
-  font-size: 1rem;
-  font-family: var(--font-body);
-  margin-bottom: 20px;
-}
-
-.ta-search:focus { border: 2px solid var(--color-focus); outline: none; }
-
-.ta-empty { color: var(--color-text-muted); }
+.ta-detail-faculty { margin-top: 20px; font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
   .ta-course-card { transition: none; }
