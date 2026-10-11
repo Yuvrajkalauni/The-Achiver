@@ -88,6 +88,15 @@
 
 .ta-teacher-meta { margin: 4px 0 0; font-size: 0.85rem; color: var(--color-text-muted); }
 
+/* ProfileCard grid (React Bits) — cards are fixed-size by construction */
+.ta-profile-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  justify-items: center;
+  align-items: start;
+}
+
 /* DepthCarousel wrap + active-teacher caption */
 .ta-carousel-wrap {
   position: relative;

@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import DepthCarousel from './DepthCarousel'
-import { TEACHERS } from '../data/site'
+import ProfileCard from './ProfileCard'
+import { TEACHERS, whatsappTeacher } from '../data/site'
 import './HomeSections.css'
 
 function TeacherGrid() {
@@ -26,9 +25,18 @@ function TeacherGrid() {
   )
 }
 
+const handleOf = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/^(mr|mrs|ms)\.\s*/, '')
+    .replace(/[^a-z]+/g, '')
+
+/** Home "Meet Our Teachers" — holographic ProfileCards (React Bits).
+ *  The full /teachers page keeps the plain photo grid. */
 export default function TeachersSection({ preview = true }: { preview?: boolean }) {
-  const [active, setActive] = useState(0)
-  const current = TEACHERS[active] ?? TEACHERS[0]
+  const openEnquiry = (name: string) => {
+    window.open(whatsappTeacher(name), '_blank', 'noopener,noreferrer')
+  }
 
   return (
     <section className="ta-section" aria-labelledby="ta-teachers-title">
@@ -36,29 +44,29 @@ export default function TeachersSection({ preview = true }: { preview?: boolean 
         <p className="ta-section__kicker">Faculty · PRD T-01</p>
         <h2 id="ta-teachers-title">Meet Our Teachers</h2>
         <p className="ta-section__lead">
-          Experienced, dedicated subject teachers who make tough concepts simple. Drag, use arrows
-          or dots to browse all {TEACHERS.length} faculty.
+          Experienced, dedicated subject teachers who make tough concepts simple. Hover a card —
+          it tilts, catches the light and shows the holo foil.
         </p>
         {preview ? (
-          <>
-            <div className="ta-carousel-wrap">
-              <DepthCarousel
-                items={TEACHERS.map((t) => ({
-                  image: t.photo,
-                  alt: `Portrait of ${t.name}, ${t.subject} teacher`,
-                }))}
-                cardWidth={280}
-                cardHeight={360}
-                autoplay
-                autoplayDelay={3000}
-                loop
-                onChange={(i) => setActive(i)}
+          <div className="ta-profile-grid">
+            {TEACHERS.map((t) => (
+              <ProfileCard
+                key={t.name}
+                avatarUrl={t.photo}
+                miniAvatarUrl={t.photo}
+                name={t.name}
+                title={`${t.subject} · ${t.credential}`}
+                handle={handleOf(t.name)}
+                status={t.experience}
+                contactText="Enquire"
+                onContactClick={() => openEnquiry(t.name)}
+                theme="light"
+                enableTilt
+                intro
+                showUserInfo
               />
-            </div>
-            <p className="ta-teacher-caption" aria-live="polite">
-              <strong>{current.name}</strong> — {current.subject} · {current.credential}
-            </p>
-          </>
+            ))}
+          </div>
         ) : (
           <TeacherGrid />
         )}

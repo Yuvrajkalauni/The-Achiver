@@ -125,6 +125,10 @@ export function whatsappEnquiry(course: string, batch: string) {
   return `${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Namaste! I want to enroll in ${batch} (${course}).`)}`
 }
 
+export function whatsappTeacher(name: string) {
+  return `${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Namaste! I want to learn from ${name}. Please share batch details.`)}`
+}
+
 export type Faq = { q: string; a: string }
 
 export const FAQS: Faq[] = [
