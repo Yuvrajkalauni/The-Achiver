@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import DepthCarousel from './DepthCarousel'
 import { TEACHERS } from '../data/site'
 import './HomeSections.css'
@@ -58,11 +57,6 @@ export default function TeachersSection({ preview = true }: { preview?: boolean 
             </div>
             <p className="ta-teacher-caption" aria-live="polite">
               <strong>{current.name}</strong> — {current.subject} · {current.credential}
-            </p>
-            <p className="ta-section__more">
-              <Link to="/teachers" className="ta-btn ta-btn--outline">
-                View all {TEACHERS.length} teachers as grid
-              </Link>
             </p>
           </>
         ) : (
