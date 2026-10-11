@@ -16,7 +16,7 @@
 
 @media (min-width: 900px) {
   .ta-hero__inner {
-    grid-template-columns: 0.9fr 1.1fr;
+    grid-template-columns: 0.75fr 1.25fr;
     padding: 64px 20px 88px;
   }
   .ta-hero__frame {
