@@ -1,0 +1,52 @@
+/*
+ * Monestra Edu Theme tokens
+ * Source: Assets/theme/edu-theme.json v1.0.0
+ * Single source of truth — use vars instead of hard-coded values.
+ */
+:root {
+  --color-primary: #0c4137;
+  --color-primary-800: #09332b;
+  --color-primary-900: #062720;
+  --color-secondary: #06d6a0;
+  --color-secondary-600: #047857;
+  --color-tint: #e6fbf6;
+  --color-accent: #f4b942;
+  --color-accent-hover: #e5a82f;
+  --color-text: #1f2933;
+  --color-text-muted: #5f6c72;
+  --color-heading: #0c4137;
+  --color-link: #047857;
+  --color-link-hover: #0c4137;
+  --color-border: #dce5e3;
+  --color-border-strong: #c2cfcc;
+  --color-focus: #06d6a0;
+  --color-page: #ffffff;
+  --color-section: #e6fbf6;
+  --color-inverse: #0c4137;
+
+  --gradient-hero-dark: linear-gradient(135deg, #062720 0%, #0c4137 60%, #1b6b5c 100%);
+  --gradient-soft: linear-gradient(180deg, #e6fbf6 0%, #ffffff 100%);
+  --gradient-cta: linear-gradient(90deg, #f4b942 0%, #f7cd74 100%);
+  --gradient-loader: linear-gradient(90deg, #06d6a0 0%, #4fd6b3 45%, #f4b942 100%);
+
+  --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', 'Noto Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-devanagari: 'Noto Sans Devanagari', 'Mukta', sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-md: 0 4px 12px rgba(12, 65, 55, 0.1);
+  --shadow-lg: 0 12px 32px rgba(12, 65, 55, 0.14);
+
+  --container: 1200px;
+  --navbar-h: 80px;
+  --navbar-h-mobile: 64px;
+
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --easing: cubic-bezier(0.2, 0, 0, 1);
+}
