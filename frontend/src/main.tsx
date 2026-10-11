@@ -6,6 +6,7 @@ import './components/LoadingScreen.css'
 import './components/Navbar.css'
 import './components/HeroSection.css'
 import './components/Footer.css'
+import './components/HomeSections.css'
 import './pages/Page.css'
 import App from './App.tsx'
 

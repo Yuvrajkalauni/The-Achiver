@@ -9,6 +9,8 @@ import Syllabus from './pages/Syllabus'
 import MockTest from './pages/MockTest'
 import About from './pages/About'
 import Legal from './pages/Legal'
+import Teachers from './pages/Teachers'
+import Faqs from './pages/Faqs'
 
 function NotFound() {
   return (
@@ -42,6 +44,8 @@ export default function App() {
             {/* PRD canonical path alias */}
             <Route path="/tests/free" element={<Navigate to="/mock-test" replace />} />
             <Route path="/about" element={<About />} />
+            <Route path="/teachers" element={<Teachers />} />
+            <Route path="/faqs" element={<Faqs />} />
             <Route path="/privacy" element={<Legal />} />
             <Route path="/terms" element={<Legal />} />
             <Route path="/cookies" element={<Legal />} />

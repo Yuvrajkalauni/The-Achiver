@@ -24,6 +24,8 @@ const EXPLORE = [
   { to: '/courses', label: 'Courses' },
   { to: '/syllabus', label: 'Syllabus' },
   { to: '/mock-test', label: 'Mock Test' },
+  { to: '/teachers', label: 'Teachers' },
+  { to: '/faqs', label: 'FAQs' },
   { to: '/about', label: 'About' },
 ] as const
 
