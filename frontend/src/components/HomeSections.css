@@ -97,6 +97,17 @@
   align-items: start;
 }
 
+/* Infinite drift rows */
+.ta-ig-rows {
+  display: grid;
+  gap: 8px;
+  margin: 0 -12px;
+}
+
+@media (min-width: 768px) {
+  .ta-ig-rows { margin: 0 -20px; }
+}
+
 /* DepthCarousel wrap + active-teacher caption */
 .ta-carousel-wrap {
   position: relative;
