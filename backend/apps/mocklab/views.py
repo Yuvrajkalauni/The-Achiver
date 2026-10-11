@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from .jobs import mark_stale_jobs_failed, start_evaluation, start_generation
+from .jobs import mark_stale_jobs_failed, start_evaluation, start_round, start_round_evaluation
 from .models import LabAnswer, LabAttempt, LabQuestion, LabResult, LabTest
 from .ollama import OLLAMA_MODEL, OLLAMA_URL, ollama_health
 from .validation import score_attempt
@@ -52,9 +52,29 @@ def generate_test(request):
     if not ok:
         return _err(message, 503, fix="Run `ollama serve` then `ollama pull qwen2.5:3b`.")
     test = LabTest.objects.create(status=LabTest.STATUS_QUEUED, total=100)
-    start_generation(test.pk)
+    start_round(test.pk)
     logger.info("mocklab generate started test=%s", test.pk)
     return JsonResponse({"testId": test.pk, "status": test.status}, status=202)
+
+
+@csrf_exempt
+@require_POST
+def generate_next(request, test_id: int):
+    """Generate the next round of 5. 409 while busy or when the set is complete."""
+    mark_stale_jobs_failed()
+    try:
+        test = LabTest.objects.get(pk=test_id)
+    except LabTest.DoesNotExist:
+        return _err("Test not found.", 404)
+    if test.status == LabTest.STATUS_FAILED:
+        return _err(test.error or "Test failed.", 409)
+    if test.status == LabTest.STATUS_GENERATING:
+        return _err("Generation already running.", 409)
+    if LabQuestion.objects.filter(test=test).count() >= test.total:
+        return JsonResponse({"testId": test.pk, "complete": True})
+    start_round(test.pk)
+    made = LabQuestion.objects.filter(test=test).count()
+    return JsonResponse({"testId": test.pk, "round": made // 5, "complete": False}, status=202)
 
 
 @require_GET
@@ -101,6 +121,7 @@ def _serialize_attempt_payload(attempt: LabAttempt) -> dict:
     saved = {a.question_id: a.selected for a in attempt.answers.all()}
     elapsed = (timezone.now() - attempt.started_at).total_seconds()
     remaining = max(0, int(attempt.duration_minutes * 60 - elapsed))
+    submitted = set(attempt.submitted_rounds or [])
     return {
         "attemptId": attempt.pk,
         "testId": attempt.test_id,
@@ -109,6 +130,9 @@ def _serialize_attempt_payload(attempt: LabAttempt) -> dict:
         "remaining_s": remaining,
         "answered": sum(1 for v in saved.values() if v is not None),
         "total": len(questions),
+        "submitted_rounds": attempt.submitted_rounds,
+        "round_results": attempt.round_results,
+        "test_complete": len(questions) >= attempt.test.total,
         "questions": [
             {
                 "id": q.id,
@@ -118,6 +142,9 @@ def _serialize_attempt_payload(attempt: LabAttempt) -> dict:
                 "options": q.options,
                 "difficulty": q.difficulty,
                 "order": q.order,
+                "round_no": q.round_no,
+                # Keys only for rounds already submitted (never leak the active round).
+                **({"correct_index": q.correct_index} if q.round_no in submitted else {}),
             }
             for q in questions
         ],
@@ -171,8 +198,8 @@ def start_attempt(request, test_id: int):
         test = LabTest.objects.get(pk=test_id)
     except LabTest.DoesNotExist:
         return _err("Test not found.", 404)
-    if test.status != LabTest.STATUS_READY:
-        return _err(f"Test is {test.status}, not ready yet.", 409)
+    if test.status == LabTest.STATUS_FAILED:
+        return _err(test.error or "Test failed.", 409)
     body = _body(request)
     if body is None:
         return _err("Invalid JSON body.", 400)
@@ -232,6 +259,8 @@ def submit_attempt(request, attempt_id: int):
         attempt = LabAttempt.objects.get(pk=attempt_id)
     except LabAttempt.DoesNotExist:
         return _err("Attempt not found.", 404)
+    if LabQuestion.objects.filter(test=attempt.test).count() < attempt.test.total:
+        return _err("Finish all 20 rounds before the final submit.", 409)
     attempt = _submit_attempt(attempt)  # idempotent: double submit is safe
     return JsonResponse(
         {
@@ -304,14 +333,57 @@ def get_result(request, attempt_id: int):
 
 @csrf_exempt
 @require_POST
+def submit_round(request, attempt_id: int):
+    """Score one 5-question round now; AI explanations follow in the background."""
+    from .jobs import score_round
+
+    try:
+        attempt = LabAttempt.objects.get(pk=attempt_id)
+    except LabAttempt.DoesNotExist:
+        return _err("Attempt not found.", 404)
+    if _auto_submit_if_expired(attempt):
+        return _err("Time ran out — the attempt was auto-submitted.", 409)
+    if attempt.status != LabAttempt.STATUS_IN_PROGRESS:
+        return _err("Attempt already submitted.", 409)
+    body = _body(request)
+    if body is None or not isinstance(body.get("round"), int):
+        return _err('Body must be JSON like {"round": 0}.', 400)
+    round_no: int = body["round"]
+    questions = list(
+        LabQuestion.objects.filter(test=attempt.test, round_no=round_no).order_by("order")
+    )
+    if len(questions) != 5:
+        return _err("That round is not generated yet.", 409)
+    if round_no in (attempt.submitted_rounds or []):
+        cached = (attempt.round_results or {}).get(str(round_no), {})
+        return JsonResponse(
+            {
+                "attemptId": attempt.pk,
+                "round": round_no,
+                "score": cached.get("score", 0),
+                "total": 5,
+                "ready": cached.get("ready", False),
+            }
+        )
+    answers = {a.question_id: a.selected for a in attempt.answers.all()}
+    score, _ = score_round(questions, answers)
+    attempt.submitted_rounds = (attempt.submitted_rounds or []) + [round_no]
+    attempt.round_results[str(round_no)] = {"score": score, "total": 5, "ready": False, "explanations": {}}
+    attempt.save(update_fields=["submitted_rounds", "round_results"])
+    start_round_evaluation(attempt.pk, round_no)
+    return JsonResponse({"attemptId": attempt.pk, "round": round_no, "score": score, "total": 5, "ready": False})
+
+
+@csrf_exempt
+@require_POST
 def repeat_attempt(request, test_id: int):
     """New attempt on the SAME questions, answers cleared, timer reset."""
     try:
         test = LabTest.objects.get(pk=test_id)
     except LabTest.DoesNotExist:
         return _err("Test not found.", 404)
-    if test.status != LabTest.STATUS_READY:
-        return _err(f"Test is {test.status}, not ready yet.", 409)
+    if test.status == LabTest.STATUS_FAILED:
+        return _err(test.error or "Test failed.", 409)
     body = _body(request) or {}
     minutes = body.get("minutes", DEFAULT_MINUTES)
     if not isinstance(minutes, int) or not 5 <= minutes <= 300:

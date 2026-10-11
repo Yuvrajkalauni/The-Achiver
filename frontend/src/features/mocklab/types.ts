@@ -6,6 +6,16 @@ export interface LabQuestion {
   options: string[]
   difficulty: string
   order: number
+  round_no: number
+  /** Present only for submitted rounds — never for the active round. */
+  correct_index?: number
+}
+
+export interface RoundResult {
+  score: number
+  total: number
+  ready: boolean
+  explanations: Record<string, { text: string; ai: boolean }>
 }
 
 export interface AttemptPayload {
@@ -16,6 +26,9 @@ export interface AttemptPayload {
   remaining_s: number
   answered: number
   total: number
+  submitted_rounds: number[]
+  round_results: Record<string, RoundResult>
+  test_complete: boolean
   questions: LabQuestion[]
   answers: Record<string, number | null>
   pass_mark: number

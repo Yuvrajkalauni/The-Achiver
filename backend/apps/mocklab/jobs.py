@@ -64,6 +64,7 @@ def _fill_slots(
     seen: set[str],
     rng: random.Random,
     order_start: int,
+    round_no: int = 0,
 ) -> tuple[int, bool]:
     """Generate `needed` verified questions. Returns (accepted, ok)."""
     accepted = 0
@@ -114,6 +115,7 @@ def _fill_slots(
                     explanation=str(q.get("explanation", "")).strip(),
                     difficulty=str(q.get("difficulty", "medium")).lower(),
                     order=order_start + accepted,
+                    round_no=round_no,
                 )
             seen.add(normalize(str(q["text"])))
             accepted += 1
@@ -121,7 +123,16 @@ def _fill_slots(
     return accepted, True
 
 
-def run_generation(test_id: int) -> None:
+def next_subject(test: LabTest) -> str | None:
+    """First subject (fixed order) still below 25 questions, else None = complete."""
+    for subject in prompts.SUBJECTS:
+        if LabQuestion.objects.filter(test=test, subject=subject).count() < prompts.QUESTIONS_PER_SUBJECT:
+            return subject
+    return None
+
+
+def run_round(test_id: int) -> None:
+    """Generate exactly one round (5 questions) for the next unfinished subject."""
     close_old_connections()
     try:
         test = LabTest.objects.get(pk=test_id)
@@ -133,42 +144,38 @@ def run_generation(test_id: int) -> None:
         return
     try:
         LabTest.objects.filter(pk=test_id).update(status=LabTest.STATUS_GENERATING)
+        subject = next_subject(test)
+        if subject is None:
+            LabTest.objects.filter(pk=test_id).update(status=LabTest.STATUS_READY, error="")
+            return
+        have = LabQuestion.objects.filter(test=test, subject=subject).count()
+        topic = prompts.TOPICS[subject][(have // prompts.BATCH_SIZE) % len(prompts.TOPICS[subject])]
         seen: set[str] = set()
         for row in LabQuestion.objects.values_list("text", flat=True):
             seen.add(normalize(row))
-        rng = random.Random()
-        order = 0
-        per_subject_target = prompts.QUESTIONS_PER_SUBJECT
-        for subject in prompts.SUBJECTS:
-            have = LabQuestion.objects.filter(test=test, subject=subject).count()
-            topics = prompts.TOPICS[subject]
-            # Spread remaining slots across the 5 topics.
-            remaining = per_subject_target - have
-            ti = 0
-            while remaining > 0:
-                topic = topics[ti % len(topics)]
-                take = min(prompts.BATCH_SIZE, remaining)
-                got, ok_slots = _fill_slots(test, subject, topic, take, seen, rng, order)
-                order += got
-                remaining -= got
-                if not ok_slots:
-                    _fail(
-                        test_id,
-                        f"Generation stalled on {subject}/{topic} after retries. "
-                        "The 3B model kept failing validation/verification — try again later.",
-                    )
-                    return
-                ti += 1
+        order_start = LabQuestion.objects.filter(test=test).count()
+        round_no = order_start // prompts.BATCH_SIZE
+        got, ok_slots = _fill_slots(
+            test, subject, topic, prompts.BATCH_SIZE, seen, random.Random(), order_start, round_no
+        )
+        if not ok_slots or got < prompts.BATCH_SIZE:
+            _fail(
+                test_id,
+                f"Generation stalled on {subject}/{topic} after retries. "
+                "The 3B model kept failing validation/verification — try again.",
+            )
+            return
         LabTest.objects.filter(pk=test_id).update(status=LabTest.STATUS_READY, error="")
+        _update_progress(test_id)
     except Exception as exc:  # never leave a test stuck in generating
-        logger.exception("generation job crashed")
+        logger.exception("round job crashed")
         _fail(test_id, f"Generation crashed: {exc}")
     finally:
         close_old_connections()
 
 
-def start_generation(test_id: int) -> None:
-    t = threading.Thread(target=run_generation, args=(test_id,), daemon=True)
+def start_round(test_id: int) -> None:
+    t = threading.Thread(target=run_round, args=(test_id,), daemon=True)
     t.start()
 
 
@@ -204,7 +211,18 @@ def _evaluate_attempt(attempt_id: int) -> None:
                     weak[q.subject].append(q.topic)
 
         # AI explanations in batches of 5; fall back to stored text per question.
+        # Rounds already evaluated feed the cache first (no repeat AI cost).
         need = [q for q in questions if verdicts[q.id] != "correct"]
+        ai_text: dict[int, dict[str, Any]] = {}
+        try:
+            cached = attempt.round_results or {}
+        except AttributeError:
+            cached = {}
+        for q in need:
+            hit = (cached.get(str(q.round_no), {}) or {}).get("explanations", {}).get(str(q.id))
+            if isinstance(hit, dict) and hit.get("text"):
+                ai_text[q.id] = {"text": str(hit["text"]), "ai": bool(hit.get("ai", False))}
+        need = [q for q in need if q.id not in ai_text]
         ai_text: dict[int, dict[str, Any]] = {}
         for i in range(0, len(need), 5):
             chunk = need[i : i + 5]
@@ -274,4 +292,68 @@ def _evaluate_attempt(attempt_id: int) -> None:
 
 def start_evaluation(attempt_id: int) -> None:
     t = threading.Thread(target=_evaluate_attempt, args=(attempt_id,), daemon=True)
+    t.start()
+
+
+def score_round(
+    questions: list[LabQuestion], answers: dict[int, int | None]
+) -> tuple[int, dict[int, str]]:
+    keys = {q.id: q.correct_index for q in questions}
+    return score_attempt(answers, keys)
+
+
+def _evaluate_round(attempt_id: int, round_no: int) -> None:
+    """One AI batch for a round's wrong answers; stored text on any failure."""
+    close_old_connections()
+    try:
+        attempt = LabAttempt.objects.get(pk=attempt_id)
+        questions = list(
+            LabQuestion.objects.filter(test=attempt.test, round_no=round_no).order_by("order")
+        )
+        if not questions:
+            return
+        answers = {a.question_id: a.selected for a in attempt.answers.all()}
+        score, verdicts = score_round(questions, answers)
+        wrong = [q for q in questions if verdicts[q.id] != "correct"]
+        explanations: dict[str, dict[str, Any]] = {}
+        if wrong:
+            payload = [
+                {
+                    "id": q.id,
+                    "text": q.text,
+                    "options": q.options,
+                    "correct": q.correct_index,
+                    "chosen": answers.get(q.id),
+                }
+                for q in wrong
+            ]
+            try:
+                data = chat_json(prompts.explain_batch_prompt(payload), EXPLAIN_SCHEMA, 0.4, TIMEOUT_EXPLAIN)
+                for item in data.get("explanations", []):
+                    if isinstance(item, dict):
+                        try:
+                            qid = int(item.get("id", -1))
+                        except (TypeError, ValueError):
+                            continue
+                        if any(q.id == qid for q in wrong):
+                            explanations[str(qid)] = {"text": str(item.get("text", "")), "ai": True}
+            except OllamaError as exc:
+                logger.warning("round explain failed: %s", exc)
+            for q in wrong:
+                explanations.setdefault(str(q.id), {"text": q.explanation, "ai": False})
+        attempt.round_results[str(round_no)] = {
+            "score": score,
+            "total": len(questions),
+            "ready": True,
+            "explanations": explanations,
+        }
+        attempt.save(update_fields=["round_results"])
+    except Exception:
+        logger.exception("round evaluation crashed")
+    finally:
+        close_old_connections()
+
+
+def start_round_evaluation(attempt_id: int, round_no: int) -> None:
+    t = threading.Thread(target=_evaluate_round, args=(attempt_id, round_no), daemon=True)
     t.start()

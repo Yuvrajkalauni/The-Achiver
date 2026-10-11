@@ -20,12 +20,14 @@ Config (`backend/.env.example`): `OLLAMA_URL` (default `http://localhost:11434`)
 `OLLAMA_MODEL` (default `qwen2.5:3b`), `MOCKLAB_PASS_MARK` (default `0.4`),
 `MOCKLAB_DEFAULT_MINUTES` (default `100`).
 
-How it works: Generate creates a background job (5 questions per Ollama call × 5 calls
-per subject, topics rotated). Every question is validated (4 distinct options, valid key,
-no duplicates across all previous tests) and independently re-solved by the model —
-mismatches are discarded and retried (max 3 per slot). Correct-option positions are
-randomized. Answers are autosaved per question; the timer (default 100 min) auto-submits.
-Scoring is deterministic code; the AI then writes per-question explanations and an
+How it works: tests build up in rounds of 5 (20 rounds = 100). Each round generates
+5 questions for the next unfinished subject (topics rotated), validated (4 distinct
+options, valid key, no duplicates across all previous tests) and independently
+re-solved by the model — mismatches are discarded and retried (max 3 per slot).
+Correct-option positions are randomized. Solve a round, submit it for an instant
+score plus AI explanations, then hit Next for 5 more. Answers autosave per question;
+the timer (default 100 min) auto-submits. Final scoring is deterministic code; the AI
+then writes per-question explanations (reusing round feedback, no repeat cost) and an
 overall summary, falling back to stored text if any AI call fails.
 
 ## Troubleshooting

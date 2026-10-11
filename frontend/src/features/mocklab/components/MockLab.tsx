@@ -146,7 +146,7 @@ export default function MockLab() {
           <h1>AI MCQ Test Lab</h1>
           <p className="ta-page__lead">
             100 questions — 25 each of Mathematics, Physics, Chemistry and English — written
-            live by a local AI, then marked with AI feedback.
+            live by a local AI in rounds of 5. Solve a round, get instant feedback, hit Next.
           </p>
         </div>
       </section>
@@ -166,7 +166,7 @@ export default function MockLab() {
           <div className="ta-card">
             <span className="ta-badge">100 questions</span>
             <h2>Take a full test</h2>
-            <p>Timed, autosaved, instant deterministic marking plus AI explanations.</p>
+            <p>20 rounds of 5. Timed, autosaved, AI feedback after every round.</p>
             <label className="ta-lab-field">
               Timer (minutes)
               <input
@@ -183,7 +183,7 @@ export default function MockLab() {
               </button>
             ) : (
               <button type="button" className="ta-btn ta-btn--gold" disabled={busy} onClick={generate}>
-                {busy ? 'Starting…' : 'Generate 100 questions'}
+                {busy ? 'Starting…' : 'Start — generates first 5'}
               </button>
             )}
           </div>

@@ -57,5 +57,15 @@ export const labApi = {
       `/attempts/${attemptId}/submit`,
       { method: 'POST', body: '{}' },
     ),
+  generateNext: (testId: number) =>
+    req<{ testId: number; round?: number; complete?: boolean }>(`/tests/${testId}/generate-next`, {
+      method: 'POST',
+      body: '{}',
+    }),
+  submitRound: (attemptId: number, round: number) =>
+    req<{ attemptId: number; round: number; score: number; total: number; ready: boolean }>(
+      `/attempts/${attemptId}/submit-round`,
+      { method: 'POST', body: JSON.stringify({ round }) },
+    ),
   result: (attemptId: number) => req<ResultPayload>(`/attempts/${attemptId}/result`),
 }

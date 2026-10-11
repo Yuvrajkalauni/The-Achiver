@@ -39,6 +39,7 @@ class LabQuestion(models.Model):
     explanation = models.TextField(blank=True, default="")
     difficulty = models.CharField(max_length=16, default="medium")
     order = models.PositiveIntegerField(default=0)
+    round_no = models.PositiveIntegerField(default=0)  # 5 questions per round, 20 rounds
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -64,6 +65,8 @@ class LabAttempt(models.Model):
     ai_summary = models.TextField(blank=True, default="")
     ai_summary_fallback = models.BooleanField(default=False)
     evaluation_ready = models.BooleanField(default=False)
+    submitted_rounds = models.JSONField(default=list)  # [0, 1, ...] submitted round_nos
+    round_results = models.JSONField(default=dict)  # {"0": {score, total, ready, explanations}}
 
     def __str__(self) -> str:
         return f"Attempt {self.pk} ({self.status})"
