@@ -84,6 +84,25 @@
 
 .ta-teacher-meta { margin: 4px 0 0; font-size: 0.85rem; color: var(--color-text-muted); }
 
+/* DepthCarousel wrap + active-teacher caption */
+.ta-carousel-wrap {
+  position: relative;
+  height: 500px;
+}
+
+@media (min-width: 768px) {
+  .ta-carousel-wrap { height: 540px; }
+}
+
+.ta-teacher-caption {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+}
+
+.ta-teacher-caption strong { color: var(--color-heading); }
+
 /* Testimonials */
 .ta-quote { display: flex; flex-direction: column; gap: 10px; }
 
