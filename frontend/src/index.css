@@ -25,23 +25,4 @@ a:hover { color: var(--color-link-hover); }
   outline-offset: 2px;
 }
 
-.ta-footer {
-  margin-top: auto;
-  background: var(--color-inverse);
-  color: #c2f3e6;
-}
-
-.ta-footer__inner {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 20px 12px;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  font-size: 0.875rem;
-}
-
-@media (min-width: 768px) {
-  .ta-footer__inner { padding: 20px 20px; }
-}
+/* Footer styles live in components/Footer.css (theme footer tokens). */

@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import LoadingScreen from './components/LoadingScreen'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 import Home from './pages/Home'
 import Courses from './pages/Courses'
 import Syllabus from './pages/Syllabus'
 import MockTest from './pages/MockTest'
 import About from './pages/About'
+import Legal from './pages/Legal'
 
 function NotFound() {
   return (
@@ -40,14 +42,12 @@ export default function App() {
             {/* PRD canonical path alias */}
             <Route path="/tests/free" element={<Navigate to="/mock-test" replace />} />
             <Route path="/about" element={<About />} />
+            <Route path="/privacy" element={<Legal />} />
+            <Route path="/terms" element={<Legal />} />
+            <Route path="/cookies" element={<Legal />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <footer className="ta-footer">
-            <div className="ta-footer__inner">
-              <span>The Achievers · Institute of Learning</span>
-              <span>Mahendranagar, Nepal</span>
-            </div>
-          </footer>
+          <Footer />
         </>
       )}
     </BrowserRouter>
