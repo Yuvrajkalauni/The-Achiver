@@ -129,10 +129,15 @@
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 450ms var(--easing);
+  transform: scale(1.04);
+  transition: opacity 1000ms ease-in-out, transform 3000ms ease-out;
+  will-change: opacity, transform;
 }
 
-.ta-hero__img.is-active { opacity: 1; }
+.ta-hero__img.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
 
 .ta-hero__float {
   position: absolute;

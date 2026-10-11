@@ -20,7 +20,7 @@ const SLIDES = [
   },
 ] as const
 
-const ROTATE_MS = 1500
+const ROTATE_MS = 3000
 
 /**
  * Two-column hero with social proof (Hero-1 pattern, theme-adapted).
@@ -82,7 +82,7 @@ export default function HeroSection() {
           className="ta-hero__media"
           role="region"
           aria-roledescription="carousel"
-          aria-label="Campus and faculty banners, rotating every 1.5 seconds"
+          aria-label="Campus and faculty banners, rotating every 3 seconds"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
           onFocus={() => setPaused(true)}
