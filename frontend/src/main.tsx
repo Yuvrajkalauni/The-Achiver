@@ -14,10 +14,14 @@ import './components/Syllabus.css'
 import './components/Footer.css'
 import './components/HomeSections.css'
 import './pages/Page.css'
+import './styles/theme-dark.css'
+import { ThemeProvider } from './theme'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
   </StrictMode>,
 )

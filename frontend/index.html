@@ -13,6 +13,13 @@
       content="The Achievers Institute of Learning — AI powered online tuition for Class 11 & 12, SEE, CEE, IOE and CSIT in Nepal."
     />
     <title>The Achievers — Institute of Learning</title>
+    <script>
+      try {
+        if (localStorage.getItem('ta-theme') === 'dark') {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      } catch (e) {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="image" href="/hero/hero-1.jpg" fetchpriority="high" />

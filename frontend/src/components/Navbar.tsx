@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useState } from 'react'
+import ThemeToggle from './ThemeToggle'
 import './Navbar.css'
 
 // PRD §5 — only these 5 public items for R1 navbar (user request)
@@ -17,7 +18,9 @@ export default function Navbar() {
   return (
     <header className="ta-nav">
       <div className="ta-nav__inner">
-        <NavLink to="/" className="ta-nav__brand" aria-label="The Achievers Institute of Learning — home">
+        <div className="ta-nav__left">
+          <ThemeToggle />
+          <NavLink to="/" className="ta-nav__brand" aria-label="The Achievers Institute of Learning — home">
           <img
             src="/logo.jpg"
             alt="The Achievers Institute of Learning logo"
@@ -25,7 +28,8 @@ export default function Navbar() {
             width={120}
             height={52}
           />
-        </NavLink>
+          </NavLink>
+        </div>
 
         <button
           type="button"

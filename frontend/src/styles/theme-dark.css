@@ -1,0 +1,105 @@
+/* Dark theme — brand-consistent (deep Brunswick greens). Applied via
+ * documentElement[data-theme="dark"], persisted in localStorage (PRD §9).
+ * Light pills/badges intentionally stay light with forced dark text. */
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-page: #071e19;
+  --color-section: #0a2721;
+  --color-text: #d9e9e4;
+  --color-text-muted: #9dbfb6;
+  --color-heading: #ffffff;
+  --color-link: #4fd6b3;
+  --color-link-hover: #ffffff;
+  --color-border: rgba(255, 255, 255, 0.14);
+  --color-border-strong: rgba(255, 255, 255, 0.28);
+}
+
+/* Surfaces */
+[data-theme='dark'] .ta-nav,
+[data-theme='dark'] .ta-nav__menu.is-open {
+  background: var(--color-page);
+}
+
+[data-theme='dark'] .ta-card,
+[data-theme='dark'] .ta-course-card,
+[data-theme='dark'] .ta-teacher-card,
+[data-theme='dark'] .ta-track-card,
+[data-theme='dark'] .ta-batch,
+[data-theme='dark'] .ta-faq details,
+[data-theme='dark'] .ta-subject-list > details,
+[data-theme='dark'] .ta-chapter-list details,
+[data-theme='dark'] .ta-spiral-quote {
+  background: #0d2c26;
+}
+
+/* Navbar */
+[data-theme='dark'] .ta-nav__menu a {
+  color: #e6fbf6;
+}
+
+[data-theme='dark'] .ta-nav__menu ul a:hover {
+  background: rgba(6, 214, 160, 0.12);
+}
+
+[data-theme='dark'] .ta-nav__menu ul a.is-active {
+  color: var(--color-secondary);
+}
+
+[data-theme='dark'] .ta-nav__toggle span {
+  background: #e6fbf6;
+}
+
+[data-theme='dark'] .ta-theme-toggle {
+  border-color: var(--color-border-strong);
+  color: #e6fbf6;
+}
+
+[data-theme='dark'] .ta-theme-toggle:hover {
+  background: rgba(6, 214, 160, 0.12);
+}
+
+/* Hero (light gradient → heroDark) */
+[data-theme='dark'] .ta-hero {
+  background: var(--gradient-hero-dark);
+}
+
+[data-theme='dark'] .ta-btn--outline {
+  color: #e6fbf6;
+  border-color: #e6fbf6;
+}
+
+[data-theme='dark'] .ta-btn--outline:hover {
+  background: rgba(6, 214, 160, 0.12);
+}
+
+[data-theme='dark'] .ta-stars {
+  color: #e6fbf6;
+}
+
+/* Light pills keep light backgrounds with forced dark text */
+[data-theme='dark'] .ta-badge,
+[data-theme='dark'] .ta-mode,
+[data-theme='dark'] .ta-off,
+[data-theme='dark'] .ta-weight,
+[data-theme='dark'] .ta-hero__float {
+  color: #0c4137;
+}
+
+/* Forms */
+[data-theme='dark'] .ta-search,
+[data-theme='dark'] .ta-chip {
+  background: #0d2c26;
+  color: #e6fbf6;
+}
+
+[data-theme='dark'] .ta-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme='dark'] .ta-chip.is-active {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: #0c4137;
+}
