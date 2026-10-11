@@ -1,0 +1,187 @@
+/* Syllabus explorer — track cards, subject accordions, weightage bars (PRD S-01–S-04). */
+.ta-track-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+  margin-top: 20px;
+}
+
+@media (min-width: 700px) {
+  .ta-track-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1100px) {
+  .ta-track-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.ta-track-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 2px rgba(12, 65, 55, 0.08);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform var(--duration-base) var(--easing), box-shadow var(--duration-base) var(--easing);
+}
+
+.ta-track-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.ta-track-body { padding: 24px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+
+.ta-track-body h3 { margin: 0; font-size: 1.25rem; color: var(--color-heading); }
+
+.ta-track-desc { margin: 0; color: var(--color-text-muted); font-size: 0.92rem; }
+
+.ta-count-row {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.ta-count-row strong { color: var(--color-heading); font-size: 1.1rem; margin-right: 4px; }
+
+.ta-track-body .ta-btn { margin-top: auto; align-self: flex-start; }
+
+.ta-track-note { margin-top: 24px; color: var(--color-text-muted); font-size: 0.9rem; }
+
+.ta-notice {
+  margin: 20px 0 0;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background: #fef6e3;
+  border: 1px solid var(--color-accent);
+  color: #7a4f01;
+}
+
+.ta-subject-list { display: grid; gap: 12px; margin-top: 4px; }
+
+.ta-subject-list > details,
+.ta-chapter-list details {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0 20px;
+}
+
+.ta-subject-list summary,
+.ta-chapter-list summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  font-weight: 600;
+  color: var(--color-heading);
+  cursor: pointer;
+  list-style: none;
+}
+
+.ta-subject-list summary::-webkit-details-marker,
+.ta-chapter-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.ta-subject-list > details > summary strong { display: block; font-size: 1.05rem; }
+
+.ta-subject-list summary small,
+.ta-chapter-list summary small {
+  display: block;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.ta-chapter-list summary { font-size: 0.95rem; }
+
+.ta-subject-list summary::after,
+.ta-chapter-list summary::after {
+  content: '+';
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-tint);
+  color: var(--color-primary);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.ta-subject-list details[open] > summary::after,
+.ta-chapter-list details[open] > summary::after {
+  content: '–';
+  background: var(--color-secondary);
+}
+
+.ta-weight {
+  flex: none;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.ta-weight-bar {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-tint);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.ta-weight-bar span {
+  display: block;
+  height: 100%;
+  background: var(--color-secondary);
+}
+
+.ta-chapter-list { display: grid; gap: 10px; padding-bottom: 18px; }
+
+.ta-chapter-list ol {
+  margin: 0 0 6px;
+  padding-left: 22px;
+  color: var(--color-text);
+  display: grid;
+  gap: 6px;
+  font-size: 0.95rem;
+}
+
+.ta-practice { margin: 0 0 16px; font-size: 0.9rem; font-weight: 600; }
+
+.ta-search {
+  min-height: 48px;
+  width: 100%;
+  max-width: 360px;
+  padding: 0 16px;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-family: var(--font-body);
+  margin: 20px 0;
+  background: #fff;
+}
+
+.ta-search:focus { border: 2px solid var(--color-focus); outline: none; }
+
+.ta-empty { color: var(--color-text-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ta-track-card { transition: none; }
+}

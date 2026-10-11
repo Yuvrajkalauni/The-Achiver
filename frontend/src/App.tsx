@@ -12,6 +12,7 @@ import Legal from './pages/Legal'
 import Teachers from './pages/Teachers'
 import Faqs from './pages/Faqs'
 import CourseDetail from './pages/CourseDetail'
+import SyllabusTrack from './pages/SyllabusTrack'
 
 function NotFound() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:slug" element={<CourseDetail />} />
+            <Route path="/syllabus/:slug" element={<SyllabusTrack />} />
             <Route path="/syllabus" element={<Syllabus />} />
             <Route path="/mock-test" element={<MockTest />} />
             {/* PRD canonical path alias */}

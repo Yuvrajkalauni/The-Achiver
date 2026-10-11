@@ -1,17 +1,45 @@
+import { Link } from 'react-router-dom'
 import Page from './Page'
+import { SYLLABUS_TRACKS, trackCounts } from '../data/syllabus'
+import '../components/Syllabus.css'
 
 export default function Syllabus() {
   return (
     <Page
-      kicker="PRD S-01 / S-02"
+      kicker="Exam tracks · PRD S-01"
       title="Syllabus"
-      lead="Five tracks: IOE, BSc CSIT, IOE MSc, NEB Grade XII, CEE Medical — subjects, chapters, topics and weightage."
+      lead="Five exam tracks with subjects, chapters, topics and weightage — live data from the institute catalogue."
     >
-      <div className="ta-cards">
-        <div className="ta-card"><span className="ta-badge">IOE</span><h2>IOE Entrance</h2><p>4 subjects · 15 chapters · 105 topics.</p></div>
-        <div className="ta-card"><span className="ta-badge">NEB</span><h2>NEB Grade XII</h2><p>5 subjects · 32 chapters · 145 topics.</p></div>
-        <div className="ta-card"><span className="ta-badge">CEE</span><h2>CEE Medical</h2><p>5 subjects · 30 chapters · 174 topics.</p></div>
+      <div className="ta-track-grid">
+        {SYLLABUS_TRACKS.map((t) => {
+          const c = trackCounts(t)
+          return (
+            <article className="ta-track-card" key={t.slug}>
+              <div className="ta-track-body">
+                <h3>{t.title}</h3>
+                {t.description && <p className="ta-track-desc">{t.description}</p>}
+                <ul className="ta-count-row" aria-label={`${t.title} contents`}>
+                  <li>
+                    <strong>{c.subjects}</strong> subjects
+                  </li>
+                  <li>
+                    <strong>{c.chapters}</strong> chapters
+                  </li>
+                  <li>
+                    <strong>{c.topics}</strong> topics
+                  </li>
+                </ul>
+                <Link to={`/syllabus/${t.slug}`} className="ta-btn ta-btn--outline">
+                  Open track
+                </Link>
+              </div>
+            </article>
+          )
+        })}
       </div>
+      <p className="ta-track-note">
+        NEB Class 11 track follows once the academic team finalises its chapters (PRD S-05).
+      </p>
     </Page>
   )
 }
