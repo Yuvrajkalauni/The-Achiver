@@ -35,10 +35,19 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      {loading && <LoadingScreen onDone={() => setLoading(false)} />}
+      {loading && <RouteLoader onDone={() => setLoading(false)} />}
       {!loading && <SiteShell />}
     </BrowserRouter>
   )
+}
+
+/**
+ * Skips the progress bar + percentage on the blank free-mock page;
+ * every other route keeps the full loader.
+ */
+function RouteLoader({ onDone }: { onDone: () => void }) {
+  const { pathname } = useLocation()
+  return <LoadingScreen onDone={onDone} showProgress={pathname !== '/mock-test/free'} />
 }
 
 /**

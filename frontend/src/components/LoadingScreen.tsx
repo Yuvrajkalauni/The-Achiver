@@ -6,6 +6,11 @@ type Props = {
   onDone?: () => void
   /** Minimum visible time so the brand mark is readable (ms) */
   minVisibleMs?: number
+  /**
+   * Show the horizontal progress bar + percentage text.
+   * Set to false on /mock-test/free (blank page) — logo/brand still animate.
+   */
+  showProgress?: boolean
 }
 
 /**
@@ -14,20 +19,26 @@ type Props = {
  * (emerald -> polar -> gold) on heroDark background.
  * Shows before Navbar / page content on first load.
  */
-export default function LoadingScreen({ onDone, minVisibleMs = 1800 }: Props) {
+export default function LoadingScreen({
+  onDone,
+  minVisibleMs = 1800,
+  showProgress = true,
+}: Props) {
   const [progress, setProgress] = useState(8)
   const [leaving, setLeaving] = useState(false)
 
   useEffect(() => {
     const start = Date.now()
     // Fake staged progress: fast start, ease to 90%, jump to 100 on window load
-    const tick = window.setInterval(() => {
-      setProgress((p) => {
-        if (p >= 90) return p
-        const next = p + Math.max(1, (90 - p) * 0.08)
-        return Math.min(90, Math.round(next))
-      })
-    }, 120)
+    const tick = showProgress
+      ? window.setInterval(() => {
+          setProgress((p) => {
+            if (p >= 90) return p
+            const next = p + Math.max(1, (90 - p) * 0.08)
+            return Math.min(90, Math.round(next))
+          })
+        }, 120)
+      : 0
 
     const finish = () => {
       const elapsed = Date.now() - start
@@ -56,7 +67,7 @@ export default function LoadingScreen({ onDone, minVisibleMs = 1800 }: Props) {
       }
     }
     return () => window.clearInterval(tick)
-  }, [minVisibleMs, onDone])
+  }, [minVisibleMs, onDone, showProgress])
 
   return (
     <div
@@ -79,17 +90,21 @@ export default function LoadingScreen({ onDone, minVisibleMs = 1800 }: Props) {
         <p className="ta-loader__brand">The Achievers</p>
         <p className="ta-loader__tag">AI Powered Online Tuition Classes Platform</p>
 
-        <div
-          className="ta-loader__bar"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={progress}
-          aria-label="Page loading progress"
-        >
-          <div className="ta-loader__bar-fill" style={{ width: `${progress}%` }} />
-        </div>
-        <p className="ta-loader__pct">{progress}%</p>
+        {showProgress && (
+          <>
+            <div
+              className="ta-loader__bar"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={progress}
+              aria-label="Page loading progress"
+            >
+              <div className="ta-loader__bar-fill" style={{ width: `${progress}%` }} />
+            </div>
+            <p className="ta-loader__pct">{progress}%</p>
+          </>
+        )}
       </div>
     </div>
   )
