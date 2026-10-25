@@ -59,7 +59,13 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-          <NavLink to="/mock-test" className="ta-nav__cta" onClick={() => setOpen(false)}>
+          <NavLink
+            to="/mock-test/free"
+            className="ta-nav__cta"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setOpen(false)}
+          >
             Free Mock
           </NavLink>
         </nav>
