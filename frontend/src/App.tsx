@@ -14,6 +14,7 @@ import Faqs from './pages/Faqs'
 import CourseDetail from './pages/CourseDetail'
 import SyllabusTrack from './pages/SyllabusTrack'
 import FreeMock from './pages/FreeMock'
+import AdminScreen from './features/freemock/admin/AdminScreen'
 
 function NotFound() {
   return (
@@ -51,16 +52,19 @@ function RouteLoader({ onDone }: { onDone: () => void }) {
 }
 
 /**
- * "Try Free Mock" opens /mock-test/free in a NEW TAB as a completely
- * BLANK page — no navbar, no footer, no content.
+ * The free-mock app (/mock-test/free) and its admin console
+ * (/mock-test/admin) render OUTSIDE the site shell — no navbar, no footer.
+ * The test route also skips the progress bar (user requirement).
  */
 function SiteShell() {
   const { pathname } = useLocation()
 
-  if (pathname === '/mock-test/free') {
+  const isAppRoute = pathname === '/mock-test/free' || pathname === '/mock-test/admin'
+  if (isAppRoute) {
     return (
       <Routes>
         <Route path="/mock-test/free" element={<FreeMock />} />
+        <Route path="/mock-test/admin" element={<AdminScreen />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     )

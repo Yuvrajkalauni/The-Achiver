@@ -2,6 +2,8 @@
 import os
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-insecure-key-change-me")
@@ -17,6 +19,13 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
     "http://localhost:5173,http://127.0.0.1:5173",
 ).split(",")
 
+# Custom headers used by the Free Mock Test app (anonymous owner token,
+# admin token) must survive the CORS preflight.
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-fm-owner",
+    "x-request-id",
+]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -25,7 +34,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
+    "apps.freemock",
 ]
 
 MIDDLEWARE = [
@@ -80,7 +91,27 @@ STORAGES = {
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
-    "DEFAULT_THROTTLE_RATES": {"anon": "60/min", "user": "300/min"},
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "EXCEPTION_HANDLER": "apps.freemock.errors.exception_handler",
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "60/min",
+        "user": "300/min",
+        # Free Mock Test route groups (TRD §8.3)
+        "fm_start": "20/min",
+        "fm_read": "240/min",
+        "fm_save": "240/min",
+        "fm_submit": "30/min",
+        "fm_admin": "120/min",
+        "fm_admin_login": "10/min",
+        "fm_upload": "10/min",
+    },
 }
+
+# Free Mock Test CSV limits (PRD §9.5, TRD Appendix B)
+MAX_CSV_UPLOAD_BYTES = int(os.environ.get("MAX_CSV_UPLOAD_BYTES", 10 * 1024 * 1024))
+MAX_CSV_ROWS = int(os.environ.get("MAX_CSV_ROWS", 10000))
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

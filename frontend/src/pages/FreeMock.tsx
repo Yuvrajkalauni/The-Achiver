@@ -1,9 +1,7 @@
 /**
- * "Try Free Mock" opens this route in a NEW TAB.
+ * /mock-test/free — the Free Mock Test app (PRD §9, TRD §6).
  *
- * The page is intentionally BLANK (no navbar, no footer, no content) —
- * it is a placeholder to be filled in later.
+ * Rendered OUTSIDE the site shell (no navbar/footer) so the exam surface is
+ * distraction-free. The route is opened in a NEW TAB from "Try Free Mock".
  */
-export default function FreeMock() {
-  return null
-}
+export { default } from '../features/freemock/FreeMockApp'
