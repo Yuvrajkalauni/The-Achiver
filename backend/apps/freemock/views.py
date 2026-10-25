@@ -363,7 +363,7 @@ class AdminTemplateView(APIView):
     def get(self, request):
         buffer = io.StringIO()
         writer = csv.writer(buffer)
-        writer.writerow(services.REQUIRED_COLUMNS)
+        writer.writerow(services.ALLOWED_COLUMNS)
         writer.writerow(
             [
                 "ENGLISH",

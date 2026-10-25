@@ -99,16 +99,21 @@ Student requests send `X-FM-Owner: <token>`; admin requests send
 
 ### Question bank CSV
 
-Required header (exact names, UTF-8):
+Required columns (exact names, UTF-8):
 
 ```csv
-subject,question_text,option_a,option_b,option_c,option_d,correct_option,explanation,difficulty
+subject,question_text,option_a,option_b,option_c,option_d,correct_option
 ```
+
+Optional columns: `explanation`, `difficulty`, `marks`.
 
 - `subject` must be one of `ENGLISH`, `MATHEMATICS`, `PHYSICS`, `CHEMISTRY`, `BIOLOGY`
   (case-insensitive; `math`/`maths`/`bio` are accepted)
 - `correct_option` must be `A`, `B`, `C` or `D`
-- `difficulty` is `1`–`5` or empty
+- `difficulty` is `1`–`5` or empty (defaults to empty when the column is absent)
+- `explanation` may be empty or absent (shown to students only after submission)
+- `marks` is accepted for authoring convenience but must be `5` — the exam
+  awards a fixed 5 marks per question
 - Limit: 10 MB / 10 000 rows
 - **All-or-nothing**: one invalid row rejects the whole file with row-level
   errors; duplicate questions (in the file or already in the bank) are skipped
@@ -130,7 +135,7 @@ backend/apps/freemock/
   views.py          student + admin endpoints
   serializers.py    pre-submit vs post-submit payload separation (no answer leak)
   errors.py         TRD error envelope + request IDs
-  tests.py          25 tests: lifecycle, scoring, expiry, ownership, CSV, security
+  tests.py          27 tests: lifecycle, scoring, expiry, ownership, CSV, security
   management/commands/   freemock_expire, seed_freemock_demo
 ```
 

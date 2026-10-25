@@ -283,7 +283,8 @@ export default function AdminScreen() {
 
           <p className="fm-hint">
             Required columns: <code>subject, question_text, option_a, option_b, option_c, option_d,
-            correct_option, explanation, difficulty</code>. The whole file is validated first — if any
+            correct_option</code>. Optional: <code>explanation</code>, <code>difficulty</code> (1–5),
+            <code>marks</code> (must be 5). The whole file is validated first — if any
             row fails, nothing is written.
           </p>
 

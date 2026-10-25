@@ -42,6 +42,11 @@ TEST_REST_FRAMEWORK = {
 
 CSV_HEADER = "subject,question_text,option_a,option_b,option_c,option_d,correct_option,explanation,difficulty"
 
+# Throttle history lives in the default cache and is keyed by IP/user, so it
+# leaks between test methods (same IP, same PK after rollback). A dummy cache
+# keeps DRF's ScopedRateThrottle from ever seeing accumulated history.
+TEST_CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
+
 
 def seed_pool(per_subject: int = 5) -> None:
     for subject in SUBJECTS:
@@ -56,7 +61,7 @@ def seed_pool(per_subject: int = 5) -> None:
             )
 
 
-@override_settings(REST_FRAMEWORK=TEST_REST_FRAMEWORK)
+@override_settings(REST_FRAMEWORK=TEST_REST_FRAMEWORK, CACHES=TEST_CACHES)
 class FreemockTestLifecycleTests(APITestCase):
     def setUp(self):
         seed_pool()
@@ -298,7 +303,7 @@ class FreemockTestLifecycleTests(APITestCase):
         self.assertEqual(int((expires_at - started_at).total_seconds()), DURATION_MINUTES * 60)
 
 
-@override_settings(REST_FRAMEWORK=TEST_REST_FRAMEWORK)
+@override_settings(REST_FRAMEWORK=TEST_REST_FRAMEWORK, CACHES=TEST_CACHES)
 class FreemockAdminCsvTests(APITestCase):
     def setUp(self):
         self.admin = User.objects.create_user(
@@ -362,6 +367,41 @@ class FreemockAdminCsvTests(APITestCase):
         self.assertEqual(question.correct_option, "B")
         self.assertEqual(question.options["B"], "Accommodation")
 
+    def test_minimal_header_without_optional_columns_imports(self):
+        auth = self.login()
+        header = "subject,question_text,option_a,option_b,option_c,option_d,correct_option"
+        csv_content = "\n".join(
+            [
+                header,
+                'English,"Choose the synonym of \'benevolent\'.",Cruel,Kind,Lazy,Angry,B,5',
+            ]
+        )
+        response = self.upload(csv_content, auth)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+        self.assertEqual(response.data["created"], 1)
+        question = Question.objects.get()
+        self.assertEqual(question.subject, "ENGLISH")
+        self.assertEqual(question.explanation, "")
+        self.assertIsNone(question.difficulty)
+
+    def test_marks_column_must_match_marks_per_question(self):
+        auth = self.login()
+        header = (
+            "subject,question_text,option_a,option_b,option_c,option_d,correct_option,marks"
+        )
+        good = 'ENGLISH,"Five marks?",a,b,c,d,A,5'
+        bad = 'ENGLISH,"Ten marks?",a,b,c,d,A,10'
+
+        ok = self.upload("\n".join([header, good]), auth)
+        self.assertEqual(ok.status_code, status.HTTP_201_CREATED, ok.data)
+        self.assertEqual(ok.data["created"], 1)
+
+        rejected = self.upload("\n".join([header, bad]), auth)
+        self.assertEqual(rejected.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        codes = {e["code"] for e in rejected.data["errors"]}
+        self.assertIn("INVALID_MARKS", codes)
+        self.assertEqual(Question.objects.count(), 1, "bad file must not write anything")
+
     def test_invalid_row_blocks_the_whole_file(self):
         auth = self.login()
         csv_content = "\n".join(
@@ -421,7 +461,7 @@ class FreemockAdminCsvTests(APITestCase):
         self.assertIn("subject,question_text", response.content.decode())
 
 
-@override_settings(REST_FRAMEWORK=TEST_REST_FRAMEWORK)
+@override_settings(REST_FRAMEWORK=TEST_REST_FRAMEWORK, CACHES=TEST_CACHES)
 class FreemockSecurityTests(APITestCase):
     def setUp(self):
         seed_pool()

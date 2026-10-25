@@ -390,9 +390,11 @@ REQUIRED_COLUMNS = [
     "option_c",
     "option_d",
     "correct_option",
-    "explanation",
-    "difficulty",
 ]
+# Optional columns: explanation/difficulty default when absent, `marks` is
+# accepted for authoring convenience but must match MARKS_PER_QUESTION.
+OPTIONAL_COLUMNS = ["explanation", "difficulty", "marks"]
+ALLOWED_COLUMNS = REQUIRED_COLUMNS + OPTIONAL_COLUMNS
 MAX_CSV_BYTES = getattr(settings, "MAX_CSV_UPLOAD_BYTES", 10 * 1024 * 1024)
 MAX_CSV_ROWS = getattr(settings, "MAX_CSV_ROWS", 10000)
 
@@ -426,7 +428,7 @@ def validate_csv(file_obj) -> tuple[list[dict], list[dict], dict]:
     reader = csv.DictReader(io.StringIO(text))
     header = [h.strip() for h in (reader.fieldnames or [])]
     missing = [c for c in REQUIRED_COLUMNS if c not in header]
-    extra = [c for c in header if c not in REQUIRED_COLUMNS]
+    extra = [c for c in header if c not in ALLOWED_COLUMNS]
     if missing or extra:
         details = {}
         if missing:
@@ -435,10 +437,13 @@ def validate_csv(file_obj) -> tuple[list[dict], list[dict], dict]:
             details["unexpected_columns"] = extra
         raise FreemockError(
             "INVALID_HEADER",
-            "CSV header must match the template exactly.",
+            "CSV header must contain the required columns "
+            f"({', '.join(REQUIRED_COLUMNS)}) and only optional columns "
+            f"({', '.join(OPTIONAL_COLUMNS)}).",
             status_code=422,
             details=details,
         )
+    has_marks = "marks" in header
 
     existing = {
         (subject, _norm(text))
@@ -490,6 +495,23 @@ def validate_csv(file_obj) -> tuple[list[dict], list[dict], dict]:
             row_errors.append(
                 ("INVALID_CORRECT_OPTION", "correct_option", "correct_option must be A, B, C, or D")
             )
+
+        if has_marks:
+            marks_raw = (raw_row.get("marks") or "").strip()
+            if marks_raw:
+                try:
+                    marks_value = int(marks_raw)
+                except ValueError:
+                    marks_value = None
+                if marks_value != MARKS_PER_QUESTION:
+                    row_errors.append(
+                        (
+                            "INVALID_MARKS",
+                            "marks",
+                            f"marks must be {MARKS_PER_QUESTION} — this exam awards a fixed "
+                            f"{MARKS_PER_QUESTION} marks per question",
+                        )
+                    )
 
         difficulty_raw = (raw_row.get("difficulty") or "").strip()
         difficulty: int | None = None
