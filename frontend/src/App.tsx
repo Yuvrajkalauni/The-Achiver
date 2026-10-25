@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import LoadingScreen from './components/LoadingScreen'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -13,6 +13,7 @@ import Teachers from './pages/Teachers'
 import Faqs from './pages/Faqs'
 import CourseDetail from './pages/CourseDetail'
 import SyllabusTrack from './pages/SyllabusTrack'
+import FreeMock from './pages/FreeMock'
 
 function NotFound() {
   return (
@@ -35,29 +36,48 @@ export default function App() {
   return (
     <BrowserRouter>
       {loading && <LoadingScreen onDone={() => setLoading(false)} />}
-      {!loading && (
-        <>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/courses/:slug" element={<CourseDetail />} />
-            <Route path="/syllabus/:slug" element={<SyllabusTrack />} />
-            <Route path="/syllabus" element={<Syllabus />} />
-            <Route path="/mock-test" element={<MockTest />} />
-            {/* PRD canonical path alias */}
-            <Route path="/tests/free" element={<Navigate to="/mock-test" replace />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/teachers" element={<Teachers />} />
-            <Route path="/faqs" element={<Faqs />} />
-            <Route path="/privacy" element={<Legal />} />
-            <Route path="/terms" element={<Legal />} />
-            <Route path="/cookies" element={<Legal />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Footer />
-        </>
-      )}
+      {!loading && <SiteShell />}
     </BrowserRouter>
+  )
+}
+
+/**
+ * "Try Free Mock" opens /mock-test/free in a NEW TAB as a completely
+ * BLANK page — no navbar, no footer, no content.
+ */
+function SiteShell() {
+  const { pathname } = useLocation()
+
+  if (pathname === '/mock-test/free') {
+    return (
+      <Routes>
+        <Route path="/mock-test/free" element={<FreeMock />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    )
+  }
+
+  return (
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/courses/:slug" element={<CourseDetail />} />
+        <Route path="/syllabus/:slug" element={<SyllabusTrack />} />
+        <Route path="/syllabus" element={<Syllabus />} />
+        <Route path="/mock-test" element={<MockTest />} />
+        {/* PRD canonical path alias */}
+        <Route path="/tests/free" element={<Navigate to="/mock-test" replace />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/teachers" element={<Teachers />} />
+        <Route path="/faqs" element={<Faqs />} />
+        <Route path="/privacy" element={<Legal />} />
+        <Route path="/terms" element={<Legal />} />
+        <Route path="/cookies" element={<Legal />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Footer />
+    </>
   )
 }

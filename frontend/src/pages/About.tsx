@@ -135,7 +135,12 @@ export default function About() {
         <h2>Join The Achievers today</h2>
         <p>Start with a free mock test or explore the course catalogue.</p>
         <div className="ta-hero__ctas">
-          <Link to="/mock-test" className="ta-btn ta-btn--gold">
+          <Link
+            to="/mock-test/free"
+            className="ta-btn ta-btn--gold"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Try Free Mock
           </Link>
           <Link to="/courses" className="ta-btn ta-btn--outline ta-btn--on-dark">

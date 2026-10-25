@@ -53,7 +53,12 @@ export default function HeroSection() {
             online and in-centre at Mahendranagar.
           </p>
           <div className="ta-hero__ctas">
-            <Link to="/mock-test" className="ta-btn ta-btn--gold">
+            <Link
+              to="/mock-test/free"
+              className="ta-btn ta-btn--gold"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Try Free Mock
             </Link>
             <Link to="/courses" className="ta-btn ta-btn--outline">
