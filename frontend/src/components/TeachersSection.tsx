@@ -75,13 +75,10 @@ export default function TeachersSection({
       <div className="ta-section__wrap">
         {showHeader && (
           <>
-            <p className="ta-section__kicker" data-reveal style={revealDelay(0, 60)}>
-              Faculty · PRD T-01
-            </p>
-            <h2 id="ta-teachers-title" data-reveal style={revealDelay(1, 60)}>
+            <h2 id="ta-teachers-title" data-reveal style={revealDelay(0, 60)}>
               Meet Our Teachers
             </h2>
-            <p className="ta-section__lead" data-reveal style={revealDelay(2, 60)}>
+            <p className="ta-section__lead" data-reveal style={revealDelay(1, 60)}>
               Experienced, dedicated subject teachers who make tough concepts simple. Drift through
               the faculty — drag a row, hover to pause.
             </p>

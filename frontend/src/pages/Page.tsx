@@ -8,7 +8,8 @@ export default function Page({
   lead,
   children,
 }: {
-  kicker: string
+  /** Optional eyebrow above the title — omit to start straight at the heading. */
+  kicker?: string
   title: string
   lead: string
   children?: ReactNode
@@ -18,7 +19,7 @@ export default function Page({
       <section className="ta-page__hero ta-page__hero--shader">
         <ShaderBackground className="ta-page__shader" />
         <div className="ta-page__wrap">
-          <p className="ta-page__kicker">{kicker}</p>
+          {kicker && <p className="ta-page__kicker">{kicker}</p>}
           <h1>{title}</h1>
           <p className="ta-page__lead">{lead}</p>
         </div>

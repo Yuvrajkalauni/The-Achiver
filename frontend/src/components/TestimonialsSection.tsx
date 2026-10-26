@@ -17,13 +17,10 @@ export default function TestimonialsSection({ preview = true }: { preview?: bool
   return (
     <section className="ta-section ta-section--tint" aria-labelledby="ta-testimonials-title">
       <div className="ta-section__wrap">
-        <p className="ta-section__kicker" data-reveal style={revealDelay(0, 60)}>
-          Social proof · PRD H-04
-        </p>
-        <h2 id="ta-testimonials-title" data-reveal style={revealDelay(1, 60)}>
+        <h2 id="ta-testimonials-title" data-reveal style={revealDelay(0, 60)}>
           What Our Students Say
         </h2>
-        <p className="ta-section__lead" data-reveal style={revealDelay(2, 60)}>
+        <p className="ta-section__lead" data-reveal style={revealDelay(1, 60)}>
           Loved by Class 11 &amp; 12 students across Nepal. Drag the helix or just scroll — it
           flows with the page and pauses on hover.
         </p>

@@ -10,7 +10,6 @@ const MOCKS = [
 export default function MockTest() {
   return (
     <Page
-      kicker="PRD M-01 / M-02"
       title="Mock Test"
       lead="Real-exam CBT interface: palette, timer, mark-for-review, autosave and instant results. First test per series is free."
     >

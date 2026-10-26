@@ -7,7 +7,6 @@ import '../components/Syllabus.css'
 export default function Syllabus() {
   return (
     <Page
-      kicker="Exam tracks · PRD S-01"
       title="Syllabus"
       lead="Five exam tracks with subjects, chapters, topics and weightage — live data from the institute catalogue."
     >
