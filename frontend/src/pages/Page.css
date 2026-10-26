@@ -1,4 +1,4 @@
-.ta-page { background: var(--color-page); min-height: 60vh; }
+.ta-page { background: var(--color-section); min-height: 60vh; }
 .ta-page__hero {
   position: relative;
   overflow: hidden;

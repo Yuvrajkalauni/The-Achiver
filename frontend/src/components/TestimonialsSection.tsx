@@ -15,7 +15,7 @@ function initials(name: string) {
 export default function TestimonialsSection({ preview = true }: { preview?: boolean }) {
   const list = preview ? TESTIMONIALS.slice(0, 6) : TESTIMONIALS
   return (
-    <section className="ta-section ta-section--tint" aria-labelledby="ta-testimonials-title">
+    <section className="ta-section" aria-labelledby="ta-testimonials-title">
       <div className="ta-section__wrap">
         <h2 id="ta-testimonials-title" data-reveal style={revealDelay(0, 60)}>
           What Our Students Say

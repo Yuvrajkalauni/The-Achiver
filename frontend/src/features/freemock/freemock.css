@@ -13,8 +13,9 @@
   --fm-success: var(--color-secondary-600);
   --fm-warn: #b7791f;
   --fm-warn-soft: rgba(244, 185, 66, 0.18);
-  --fm-surface: var(--color-page);
-  --fm-raised: var(--color-section);
+  /* Inverted pairing: mint field + white cards (dark keeps lighter cards). */
+  --fm-surface: var(--color-section);
+  --fm-raised: var(--color-page);
   min-height: 100svh;
   background: var(--fm-surface);
   color: var(--color-text);
@@ -357,7 +358,7 @@
   align-items: center;
   padding: 6px 14px;
   border-radius: var(--radius-pill);
-  background: var(--color-section);
+  background: var(--color-page);
   border: 1px solid var(--color-border);
   font-size: 14px;
   font-weight: 600;
@@ -677,7 +678,7 @@
   font-size: 24px;
   font-weight: 800;
   color: var(--color-heading);
-  background: var(--color-section);
+  background: var(--color-page);
   border-radius: var(--radius-sm);
   padding: 3px 10px;
 }

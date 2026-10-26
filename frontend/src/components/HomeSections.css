@@ -1,6 +1,7 @@
-/* Home content sections — theme tokens, mobile-first. */
-.ta-section { background: var(--color-page); }
-.ta-section--tint { background: var(--color-section); }
+/* Home content sections — theme tokens, mobile-first.
+   Every band sits on the section tint (--color-section), so cards (#fff in
+   light, #0d2c26 in dark) read as raised surfaces on one continuous field. */
+.ta-section { background: var(--color-section); }
 
 /* Full-width section wrapper — fluid gutter instead of a fixed 1200px cap,
    so wide viewports have no dead gutters. Header text and the carousel

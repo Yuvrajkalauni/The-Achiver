@@ -5,7 +5,8 @@ html {
   font-family: var(--font-body);
   line-height: 1.65;
   color: var(--color-text);
-  background: var(--color-page);
+  /* Content backdrop matches the tinted bands (see .ta-page / .ta-section). */
+  background: var(--color-section);
 }
 
 body {
