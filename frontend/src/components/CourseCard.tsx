@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { revealDelay } from '../lib/motion'
 import type { Course } from '../data/site'
 import './Courses.css'
 
@@ -6,10 +7,10 @@ const npr = (n: number) => `NPR ${n.toLocaleString('en-NP')}`
 
 /** Catalogue card mirroring the live site: banner, online-batch price,
 // refund + seat lines, green View Details button (PRD C-01). */
-export default function CourseCard({ course }: { course: Course }) {
+export default function CourseCard({ course, index = 0 }: { course: Course; index?: number }) {
   const online = course.batches.find((b) => b.mode === 'ONLINE') ?? course.batches[0]
   return (
-    <article className="ta-course-card">
+    <article className="ta-course-card" data-reveal style={revealDelay(index)}>
       <div className="ta-course-media">
         <img src={course.banner} alt={`${course.title} banner`} loading="lazy" />
       </div>

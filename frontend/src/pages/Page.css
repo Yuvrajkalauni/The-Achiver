@@ -32,6 +32,16 @@
   border-radius: var(--radius-lg);
   padding: 24px;
   box-shadow: 0 1px 2px rgba(12, 65, 55, 0.08);
+  transition:
+    transform var(--duration-base) var(--easing),
+    box-shadow var(--duration-base) var(--easing),
+    border-color var(--duration-base) var(--easing);
+}
+
+.ta-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-border-strong);
 }
 .ta-card h2 { margin: 0 0 8px; font-size: 1.25rem; color: var(--color-heading); }
 .ta-card p { margin: 0; color: var(--color-text-muted); line-height: 1.65; }
@@ -77,6 +87,14 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 24px;
+  transition:
+    transform var(--duration-base) var(--easing),
+    box-shadow var(--duration-base) var(--easing);
+}
+
+.ta-steps li:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
 .ta-steps h3 { margin: 0 0 6px; color: var(--color-heading); font-size: 1.1rem; }
@@ -142,3 +160,14 @@
 .ta-btn--on-dark:hover { background: rgba(255, 255, 255, 0.12); }
 
 [data-theme='dark'] .ta-steps li { background: #0d2c26; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ta-card,
+  .ta-card:hover,
+  .ta-steps li,
+  .ta-steps li:hover {
+    transition: none;
+    transform: none;
+    box-shadow: none;
+  }
+}

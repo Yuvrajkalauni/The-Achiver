@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Page from './Page'
+import { revealDelay } from '../lib/motion'
 import { SYLLABUS_TRACKS, trackCounts } from '../data/syllabus'
 import '../components/Syllabus.css'
 
@@ -70,7 +71,13 @@ export default function SyllabusTrack() {
           {subjects.map((s, si) => {
             const topicCount = s.chapters.reduce((a, c) => a + c.topics.length, 0)
             return (
-              <details key={s.title} open={si === 0 && !q} name={`syl-${track.slug}`}>
+              <details
+                key={s.title}
+                open={si === 0 && !q}
+                name={`syl-${track.slug}`}
+                data-reveal
+                style={revealDelay(si, 60)}
+              >
                 <summary>
                   <span>
                     <strong>{s.title}</strong>

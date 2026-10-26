@@ -70,7 +70,9 @@
 
 .ta-teacher-photo { position: relative; aspect-ratio: 1 / 1; flex: none; overflow: hidden; background: var(--color-tint); }
 
-.ta-teacher-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ta-teacher-photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 560ms var(--easing); }
+
+.ta-teacher-card:hover .ta-teacher-photo img { transform: scale(1.06); }
 
 .ta-teacher-photo .ta-badge--gold {
   position: absolute;
@@ -236,5 +238,6 @@
 .ta-faq details p { margin: 0 0 18px; color: var(--color-text-muted); }
 
 @media (prefers-reduced-motion: reduce) {
-  .ta-teacher-card { transition: none; }
+  .ta-teacher-card,
+  .ta-teacher-card:hover .ta-teacher-photo img { transition: none; transform: none; }
 }

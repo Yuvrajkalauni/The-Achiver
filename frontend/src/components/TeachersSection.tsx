@@ -1,13 +1,14 @@
 import InfiniteGallery from './InfiniteGallery'
 import ProfileCard from './ProfileCard'
+import { revealDelay } from '../lib/motion'
 import { TEACHERS, whatsappTeacher, type Teacher } from '../data/site'
 import './HomeSections.css'
 
 function TeacherGrid() {
   return (
     <div className="ta-teacher-grid">
-      {TEACHERS.map((t) => (
-        <article className="ta-teacher-card" key={t.name}>
+      {TEACHERS.map((t, i) => (
+        <article className="ta-teacher-card" key={t.name} data-reveal style={revealDelay(i)}>
           <div className="ta-teacher-photo">
             <img src={t.photo} alt={`Portrait of ${t.name}`} loading="lazy" />
             {t.featured && <span className="ta-badge ta-badge--gold">Featured</span>}
@@ -61,9 +62,13 @@ export default function TeachersSection({ preview = true }: { preview?: boolean 
   return (
     <section className="ta-section" aria-labelledby="ta-teachers-title">
       <div className="ta-section__wrap">
-        <p className="ta-section__kicker">Faculty · PRD T-01</p>
-        <h2 id="ta-teachers-title">Meet Our Teachers</h2>
-        <p className="ta-section__lead">
+        <p className="ta-section__kicker" data-reveal style={revealDelay(0, 60)}>
+          Faculty · PRD T-01
+        </p>
+        <h2 id="ta-teachers-title" data-reveal style={revealDelay(1, 60)}>
+          Meet Our Teachers
+        </h2>
+        <p className="ta-section__lead" data-reveal style={revealDelay(2, 60)}>
           Experienced, dedicated subject teachers who make tough concepts simple. Drift through
           the faculty — drag a row, hover to pause.
         </p>

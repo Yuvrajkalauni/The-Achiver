@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ThemeToggle from './ThemeToggle'
 import './Navbar.css'
 
@@ -14,9 +14,27 @@ export const NAV_ITEMS = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  // Shadow once the page leaves the top + a thin read-progress line.
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 8)
+      const doc = document.documentElement
+      const max = doc.scrollHeight - doc.clientHeight
+      doc.style.setProperty('--ta-progress', max > 0 ? String(Math.min(1, y / max)) : '0')
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      document.documentElement.style.removeProperty('--ta-progress')
+    }
+  }, [])
 
   return (
-    <header className="ta-nav">
+    <header className={`ta-nav${scrolled ? ' is-scrolled' : ''}`}>
       <div className="ta-nav__inner">
         <div className="ta-nav__left">
           <ThemeToggle />
@@ -70,6 +88,7 @@ export default function Navbar() {
           </NavLink>
         </nav>
       </div>
+      <span className="ta-nav__progress" aria-hidden="true" />
     </header>
   )
 }

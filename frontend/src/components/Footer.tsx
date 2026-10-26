@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { revealDelay } from '../lib/motion'
 import './Footer.css'
 
 // PRD Appendix B — single source of truth (mirrors future CMS Setting singleton, TRD §5.4)
@@ -67,7 +68,7 @@ export default function Footer() {
 
       <footer className="ta-foot" aria-label="Site footer">
         <div className="ta-foot__main">
-          <div className="ta-foot__col ta-foot__brand">
+          <div className="ta-foot__col ta-foot__brand" data-reveal style={revealDelay(0, 80)}>
             <img src="/logo.jpg" alt="The Achievers Institute of Learning" width={160} height={70} />
             <p className="ta-foot__tag">Your Success Our Achievement</p>
             <p>{CONTACT.address}</p>
@@ -90,7 +91,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <nav className="ta-foot__col" aria-label="Explore">
+          <nav className="ta-foot__col" aria-label="Explore" data-reveal style={revealDelay(1, 80)}>
             <h2>Explore</h2>
             <ul>
               {EXPLORE.map((l) => (
@@ -101,7 +102,7 @@ export default function Footer() {
             </ul>
           </nav>
 
-          <nav className="ta-foot__col" aria-label="Courses">
+          <nav className="ta-foot__col" aria-label="Courses" data-reveal style={revealDelay(2, 80)}>
             <h2>Courses</h2>
             <ul>
               {COURSE_LINKS.map((c) => (
@@ -112,7 +113,7 @@ export default function Footer() {
             </ul>
           </nav>
 
-          <div className="ta-foot__col">
+          <div className="ta-foot__col" data-reveal style={revealDelay(3, 80)}>
             <h2>Contact</h2>
             <ul className="ta-foot__contact">
               <li>

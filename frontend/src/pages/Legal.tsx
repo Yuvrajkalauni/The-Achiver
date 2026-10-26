@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom'
 import Page from './Page'
+import { revealDelay } from '../lib/motion'
 
 // PRD §14 stubs — full copy managed in CMS (X-02); keeps footer links live.
 const COPY: Record<string, { title: string; kicker: string; body: string[] }> = {
@@ -38,8 +39,8 @@ export default function Legal() {
   return (
     <Page kicker={doc.kicker} title={doc.title} lead="Short R1 summary — full version ships with the CMS.">
       <div className="ta-cards">
-        {doc.body.map((p) => (
-          <div className="ta-card" key={p.slice(0, 24)}>
+        {doc.body.map((p, i) => (
+          <div className="ta-card" key={p.slice(0, 24)} data-reveal style={revealDelay(i)}>
             <p>{p}</p>
           </div>
         ))}

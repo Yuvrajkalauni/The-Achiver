@@ -1,0 +1,203 @@
+/* ------------------------------------------------------------------ *
+ * Site-wide motion layer (ui-ux-pro-max skill — Scroll Reveal tier).
+ *
+ * Rules applied here (from the skill's motion dataset):
+ *  - small offsets (8-20px) so reveals read as a fade, not a slide
+ *  - 300-600ms, power1-style ease using the shared --easing token
+ *  - reveals run ONCE (never re-hide on scroll-up — no flip-flopping)
+ *  - 1-2 motion ideas per view: hero entrance + scroll reveal; hover
+ *    micro-interactions only, no bouncing on every element
+ *  - the last block neutralises everything under prefers-reduced-motion
+ *
+ * Component CSS keeps hover/lay-out states; this file owns every
+ * @keyframes and every entrance/scroll animation in one auditable place.
+ * ------------------------------------------------------------------ */
+
+/* ---------- 1. Scroll reveal -------------------------------------- *
+ * Markup:  <article data-reveal style={{ '--reveal-delay': '70ms' }}>
+ * Class:   .is-revealed is added once by hooks/useScrollReveal.ts     */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition:
+    opacity 520ms var(--easing),
+    transform 520ms var(--easing);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal='fade'] { transform: none; }
+[data-reveal='left'] { transform: translate3d(-20px, 0, 0); }
+[data-reveal='right'] { transform: translate3d(20px, 0, 0); }
+[data-reveal='zoom'] { transform: scale(0.97); }
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 2. Keyframes ------------------------------------------ */
+
+@keyframes ta-rise {
+  from { opacity: 0; transform: translate3d(0, 20px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ta-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ta-zoom {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Gentle idle bob for small floating badges. */
+@keyframes ta-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* One-shot light sweep across the gold CTA on hover. */
+@keyframes ta-sheen {
+  from { transform: translateX(-130%); }
+  to { transform: translateX(230%); }
+}
+
+/* Small pop for newly opened disclosure icons. */
+@keyframes ta-pop {
+  from { transform: scale(0.55); opacity: 0.4; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- 3. Hero entrance (plays on mount) ---------------------- */
+
+.ta-hero__eyebrow { animation: ta-rise 480ms var(--easing) both; }
+.ta-hero__copy h1 { animation: ta-rise 560ms var(--easing) 80ms both; }
+.ta-hero__lead { animation: ta-rise 560ms var(--easing) 160ms both; }
+.ta-hero__ctas { animation: ta-rise 560ms var(--easing) 240ms both; }
+.ta-hero__proof { animation: ta-rise 560ms var(--easing) 320ms both; }
+.ta-hero__frame { animation: ta-zoom 700ms var(--easing) 140ms both; }
+.ta-hero__float { animation: ta-float 4.5s ease-in-out 1.4s infinite; }
+
+/* ---------- 4. Inner-page hero (remounts per route) ---------------- */
+
+.ta-page__hero .ta-page__kicker { animation: ta-rise 460ms var(--easing) both; }
+.ta-page__hero h1 { animation: ta-rise 520ms var(--easing) 70ms both; }
+.ta-page__hero .ta-page__lead { animation: ta-rise 520ms var(--easing) 140ms both; }
+
+/* ---------- 5. Button micro-interactions --------------------------- */
+
+.ta-btn {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--duration-base) var(--easing),
+    box-shadow var(--duration-base) var(--easing),
+    filter var(--duration-base) var(--easing),
+    background-color var(--duration-base) var(--easing);
+}
+
+.ta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px -16px rgba(3, 30, 25, 0.6);
+}
+
+.ta-btn:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 80ms;
+}
+
+/* sheen sweep — only on the gold primary CTA, only while hovered */
+.ta-btn--gold::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 75%
+  );
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+
+.ta-btn--gold:hover::after { animation: ta-sheen 850ms var(--easing); }
+
+/* ---------- 6. FAQ disclosure -------------------------------------- */
+
+.ta-faq summary { transition: color var(--duration-base) var(--easing); }
+
+.ta-faq summary::after {
+  transition:
+    background-color var(--duration-base) var(--easing),
+    color var(--duration-base) var(--easing);
+}
+
+.ta-faq details[open] summary::after { animation: ta-pop 260ms var(--easing); }
+
+.ta-faq details[open] > p { animation: ta-rise 320ms var(--easing) 60ms both; }
+
+/* ---------- 7. Section CTA band ------------------------------------ */
+
+.ta-cta-band {
+  transition: transform var(--duration-slow) var(--easing), box-shadow var(--duration-slow) var(--easing);
+}
+
+.ta-cta-band:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 48px -28px rgba(3, 30, 25, 0.75);
+}
+
+/* ---------- 8. Floating contact actions ---------------------------- */
+
+.ta-float a {
+  transition:
+    transform var(--duration-base) var(--easing),
+    box-shadow var(--duration-base) var(--easing);
+}
+
+.ta-float a:hover { transform: translateY(-3px) scale(1.06); box-shadow: 0 16px 30px -16px rgba(0, 0, 0, 0.6); }
+.ta-float a:active { transform: scale(0.94); }
+
+/* ---------- 9. Reduced motion — global kill switch ----------------- *
+ * Scoped to selectors this file animates only: a blanket `*` rule
+ * would clobber the inline transforms of InfiniteSpiral/ProfileCard.   */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .ta-hero__eyebrow,
+  .ta-hero__copy h1,
+  .ta-hero__lead,
+  .ta-hero__ctas,
+  .ta-hero__proof,
+  .ta-hero__frame,
+  .ta-hero__float,
+  .ta-page__hero .ta-page__kicker,
+  .ta-page__hero h1,
+  .ta-page__hero .ta-page__lead,
+  .ta-faq details[open] summary::after,
+  .ta-faq details[open] > p {
+    animation: none;
+  }
+
+  .ta-btn,
+  .ta-btn:hover,
+  .ta-btn:active,
+  .ta-cta-band,
+  .ta-cta-band:hover,
+  .ta-float a,
+  .ta-float a:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .ta-btn--gold::after { display: none; }
+}

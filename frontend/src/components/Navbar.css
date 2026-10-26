@@ -6,6 +6,26 @@
   height: var(--navbar-h-mobile);
   background: #fff;
   border-bottom: 1px solid var(--color-border);
+  transition:
+    box-shadow var(--duration-base) var(--easing),
+    border-color var(--duration-base) var(--easing);
+}
+
+.ta-nav.is-scrolled {
+  box-shadow: 0 10px 30px -22px rgba(3, 30, 25, 0.65);
+}
+
+/* Read-progress hairline pinned to the bottom edge of the bar. */
+.ta-nav__progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--gradient-cta);
+  transform: scaleX(var(--ta-progress, 0));
+  transform-origin: left center;
+  transition: transform 120ms linear;
 }
 
 @media (min-width: 1024px) {
@@ -142,7 +162,30 @@
   text-decoration: none;
   border-radius: var(--radius-pill);
   border-bottom: 3px solid transparent;
+  position: relative;
 }
+
+/* Draw-in underline on hover (active keeps the solid indicator). */
+.ta-nav__menu ul a:not(.is-active)::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-secondary);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 260ms var(--easing);
+}
+
+.ta-nav__menu ul a:not(.is-active):hover::after,
+.ta-nav__menu ul a:not(.is-active):focus-visible::after {
+  transform: scaleX(1);
+}
+
+.ta-nav__menu.is-open { animation: ta-fade 200ms var(--easing); }
 
 .ta-nav__menu ul a:hover {
   background: var(--color-tint);
@@ -169,4 +212,12 @@
 
 @media (min-width: 900px) {
   .ta-nav__cta { margin: 0 0 0 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ta-nav,
+  .ta-nav__menu ul a::after {
+    transition: none;
+  }
+  .ta-nav__menu.is-open { animation: none; }
 }

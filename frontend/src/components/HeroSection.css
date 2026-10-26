@@ -166,10 +166,28 @@
   border-radius: var(--radius-pill);
   background: var(--color-border-strong);
   cursor: pointer;
+  transition:
+    background-color var(--duration-base) var(--easing),
+    transform var(--duration-base) var(--easing);
 }
 
+.ta-hero__dot:hover { transform: scaleY(1.5); }
 .ta-hero__dot.is-active { background: var(--color-secondary); }
+
+/* Proof avatars — small pop on hover (states live here, keyframes in animations.css). */
+.ta-avatars span {
+  transition: transform var(--duration-base) var(--easing);
+}
+
+.ta-avatars span:hover { transform: translateY(-4px); }
 
 @media (prefers-reduced-motion: reduce) {
   .ta-hero__img { transition: none; }
+  .ta-hero__dot,
+  .ta-hero__dot:hover,
+  .ta-avatars span,
+  .ta-avatars span:hover {
+    transition: none;
+    transform: none;
+  }
 }

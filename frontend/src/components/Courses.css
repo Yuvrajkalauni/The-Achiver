@@ -40,7 +40,15 @@
   background: var(--color-tint);
 }
 
-.ta-course-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ta-course-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 560ms var(--easing);
+}
+
+.ta-course-card:hover .ta-course-media img { transform: scale(1.06); }
 
 .ta-course-body { padding: 16px 16px 20px; display: flex; flex-direction: column; flex: 1; }
 
@@ -75,9 +83,21 @@
   font-weight: 700;
   font-size: 1rem;
   text-decoration: none;
+  transition:
+    background-color var(--duration-base) var(--easing),
+    color var(--duration-base) var(--easing),
+    transform var(--duration-base) var(--easing),
+    box-shadow var(--duration-base) var(--easing);
 }
 
-.ta-course-btn:hover { background: var(--color-secondary-600); color: #fff; }
+.ta-course-btn:hover {
+  background: var(--color-secondary-600);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px -14px rgba(3, 30, 25, 0.6);
+}
+
+.ta-course-btn:active { transform: translateY(0) scale(0.97); transition-duration: 80ms; }
 
 /* Detail page */
 .ta-detail-grid {
@@ -159,5 +179,14 @@
 .ta-detail-faculty { margin-top: 20px; font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ta-course-card { transition: none; }
+  .ta-course-card,
+  .ta-course-card:hover,
+  .ta-course-card:hover .ta-course-media img,
+  .ta-course-btn,
+  .ta-course-btn:hover,
+  .ta-course-btn:active {
+    transition: none;
+    transform: none;
+    box-shadow: none;
+  }
 }

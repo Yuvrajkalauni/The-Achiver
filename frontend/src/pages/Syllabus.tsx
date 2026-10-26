@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Page from './Page'
+import { revealDelay } from '../lib/motion'
 import { SYLLABUS_TRACKS, trackCounts } from '../data/syllabus'
 import '../components/Syllabus.css'
 
@@ -11,10 +12,10 @@ export default function Syllabus() {
       lead="Five exam tracks with subjects, chapters, topics and weightage — live data from the institute catalogue."
     >
       <div className="ta-track-grid">
-        {SYLLABUS_TRACKS.map((t) => {
+        {SYLLABUS_TRACKS.map((t, i) => {
           const c = trackCounts(t)
           return (
-            <article className="ta-track-card" key={t.slug}>
+            <article className="ta-track-card" key={t.slug} data-reveal style={revealDelay(i)}>
               <div className="ta-track-body">
                 <h3>{t.title}</h3>
                 {t.description && <p className="ta-track-desc">{t.description}</p>}

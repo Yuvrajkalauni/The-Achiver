@@ -1,4 +1,11 @@
 import Page from './Page'
+import { revealDelay } from '../lib/motion'
+
+const MOCKS = [
+  { badge: '120 min', title: 'IOE 2083 Mock 1', note: 'Free after register — 140 marks.' },
+  { badge: '180 min', title: 'CEE Mock 1', note: 'Free after register — 200 marks.' },
+  { badge: '120 min', title: 'NEB Class 12 Mock 1', note: 'Free after register — 100 marks.' },
+]
 
 export default function MockTest() {
   return (
@@ -8,9 +15,13 @@ export default function MockTest() {
       lead="Real-exam CBT interface: palette, timer, mark-for-review, autosave and instant results. First test per series is free."
     >
       <div className="ta-cards">
-        <div className="ta-card"><span className="ta-badge">120 min</span><h2>IOE 2083 Mock 1</h2><p>Free after register — 140 marks.</p></div>
-        <div className="ta-card"><span className="ta-badge">180 min</span><h2>CEE Mock 1</h2><p>Free after register — 200 marks.</p></div>
-        <div className="ta-card"><span className="ta-badge">120 min</span><h2>NEB Class 12 Mock 1</h2><p>Free after register — 100 marks.</p></div>
+        {MOCKS.map((m, i) => (
+          <div className="ta-card" key={m.title} data-reveal style={revealDelay(i)}>
+            <span className="ta-badge">{m.badge}</span>
+            <h2>{m.title}</h2>
+            <p>{m.note}</p>
+          </div>
+        ))}
       </div>
     </Page>
   )

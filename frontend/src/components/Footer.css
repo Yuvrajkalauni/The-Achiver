@@ -41,9 +41,12 @@
   color: var(--color-text);
   text-decoration: none;
   font-size: 0.95rem;
+  transition:
+    color var(--duration-base) var(--easing),
+    transform var(--duration-base) var(--easing);
 }
 
-.ta-foot__col a:hover { color: var(--color-secondary); }
+.ta-foot__col a:hover { color: var(--color-secondary); transform: translateX(3px); }
 
 .ta-foot__brand img {
   border-radius: 12px;
@@ -73,12 +76,21 @@
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: var(--color-text);
+  transition:
+    transform var(--duration-base) var(--easing),
+    border-color var(--duration-base) var(--easing),
+    background-color var(--duration-base) var(--easing),
+    color var(--duration-base) var(--easing);
 }
 
 .ta-foot__social:hover {
   border-color: var(--color-secondary);
   color: var(--color-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-3px);
 }
+
+.ta-foot__social:active { transform: translateY(0) scale(0.94); }
 
 .ta-foot__muted { color: rgba(194, 243, 230, 0.75); font-size: 0.9rem; }
 .ta-foot__contact { gap: 2px; }
@@ -152,3 +164,14 @@
 }
 
 .ta-float a:last-child { background: var(--color-accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ta-foot__col a,
+  .ta-foot__col a:hover,
+  .ta-foot__social,
+  .ta-foot__social:hover,
+  .ta-foot__social:active {
+    transition: none;
+    transform: none;
+  }
+}

@@ -10,8 +10,8 @@ export default function Courses() {
       lead="Online and physical batches with limited seats — live prices from the institute catalogue."
     >
       <div className="ta-course-grid">
-        {COURSES.map((c) => (
-          <CourseCard key={c.slug} course={c} />
+        {COURSES.map((c, i) => (
+          <CourseCard key={c.slug} course={c} index={i} />
         ))}
       </div>
     </Page>

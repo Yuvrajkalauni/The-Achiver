@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import LoadingScreen from './components/LoadingScreen'
+import useScrollReveal from './hooks/useScrollReveal'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -58,6 +59,7 @@ function RouteLoader({ onDone }: { onDone: () => void }) {
  */
 function SiteShell() {
   const { pathname } = useLocation()
+  useScrollReveal(pathname)
 
   const isAppRoute = pathname === '/mock-test/free' || pathname === '/mock-test/admin'
   if (isAppRoute) {

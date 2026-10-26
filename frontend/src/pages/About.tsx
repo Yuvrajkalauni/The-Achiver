@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import Page from './Page'
+import CountUp from '../components/CountUp'
+import { revealDelay } from '../lib/motion'
 import { COURSES, TEACHERS } from '../data/site'
 import { SYLLABUS_TRACKS, trackCounts } from '../data/syllabus'
 import './Page.css'
@@ -54,10 +56,10 @@ export default function About() {
   // Verifiable figures only (PRD H-02, open question 4): computed from our own data files.
   const topics = SYLLABUS_TRACKS.reduce((a, t) => a + trackCounts(t).topics, 0)
   const stats = [
-    { value: String(TEACHERS.length), label: 'Expert teachers' },
-    { value: String(COURSES.length), label: 'Live courses' },
-    { value: String(SYLLABUS_TRACKS.length), label: 'Exam tracks' },
-    { value: topics.toLocaleString('en-NP'), label: 'Syllabus topics' },
+    { value: TEACHERS.length, label: 'Expert teachers' },
+    { value: COURSES.length, label: 'Live courses' },
+    { value: SYLLABUS_TRACKS.length, label: 'Exam tracks' },
+    { value: topics, label: 'Syllabus topics' },
   ]
 
   return (
@@ -67,12 +69,12 @@ export default function About() {
       lead="The Achievers Institute of Learning is a technology-driven online tuition platform for Class 11 & 12 (Science & Management), plus Medical (CEE) and entrance preparation — pairing expert mentorship with a deep repository of practice and mock tests."
     >
       <section aria-labelledby="ta-about-unique">
-        <h2 id="ta-about-unique" className="ta-section-title">
+        <h2 id="ta-about-unique" className="ta-section-title" data-reveal>
           What Makes Us Unique?
         </h2>
         <div className="ta-cards">
-          {UNIQUE.map((u) => (
-            <div className="ta-card" key={u.title}>
+          {UNIQUE.map((u, i) => (
+            <div className="ta-card" key={u.title} data-reveal style={revealDelay(i)}>
               <h2>{u.title}</h2>
               <p>{u.text}</p>
             </div>
@@ -81,12 +83,12 @@ export default function About() {
       </section>
 
       <section aria-labelledby="ta-about-programs" className="ta-about-block">
-        <h2 id="ta-about-programs" className="ta-section-title">
+        <h2 id="ta-about-programs" className="ta-section-title" data-reveal>
           Comprehensive Programs
         </h2>
         <ol className="ta-steps">
           {PROGRAMS.map((p, i) => (
-            <li key={p.title}>
+            <li key={p.title} data-reveal style={revealDelay(i)}>
               <span className="ta-step-n" aria-hidden="true">
                 {String(i + 1).padStart(2, '0')}
               </span>
@@ -100,30 +102,32 @@ export default function About() {
       </section>
 
       <div className="ta-stats-band" role="region" aria-label="Institute at a glance">
-        {stats.map((s) => (
-          <div key={s.label}>
-            <strong>{s.value}</strong>
+        {stats.map((s, i) => (
+          <div key={s.label} data-reveal style={revealDelay(i, 90)}>
+            <strong>
+              <CountUp value={s.value} />
+            </strong>
             <span>{s.label}</span>
           </div>
         ))}
       </div>
 
       <section aria-labelledby="ta-about-visit" className="ta-about-block">
-        <h2 id="ta-about-visit" className="ta-section-title">
+        <h2 id="ta-about-visit" className="ta-section-title" data-reveal>
           Visit or Talk to Us
         </h2>
         <div className="ta-cards">
-          <div className="ta-card">
+          <div className="ta-card" data-reveal style={revealDelay(0)}>
             <span className="ta-badge">Centre</span>
             <h2>Mahendranagar</h2>
             <p>Puspalal Chowk, Science Campus Road. Counselling Sun–Fri.</p>
           </div>
-          <div className="ta-card">
+          <div className="ta-card" data-reveal style={revealDelay(1)}>
             <span className="ta-badge">Call</span>
             <h2>+977 9810686665</h2>
             <p>Primary line. Secondaries: 9747968501 · 9747968502.</p>
           </div>
-          <div className="ta-card">
+          <div className="ta-card" data-reveal style={revealDelay(2)}>
             <span className="ta-badge">Online</span>
             <h2>WhatsApp &amp; Email</h2>
             <p>Chat for instalments and enquiries, or write to info.theachiever@gmail.com.</p>
@@ -131,7 +135,7 @@ export default function About() {
         </div>
       </section>
 
-      <div className="ta-cta-band">
+      <div className="ta-cta-band" data-reveal="zoom">
         <h2>Join The Achievers today</h2>
         <p>Start with a free mock test or explore the course catalogue.</p>
         <div className="ta-hero__ctas">

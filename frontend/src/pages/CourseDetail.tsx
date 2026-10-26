@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import Page from './Page'
+import { revealDelay } from '../lib/motion'
 import { COURSES, whatsappEnquiry } from '../data/site'
 
 const npr = (n: number) => `NPR ${n.toLocaleString('en-NP')}`
@@ -28,13 +29,14 @@ export default function CourseDetail() {
           src={course.banner}
           alt={`${course.title} banner`}
           className="ta-detail-banner"
+          data-reveal="zoom"
         />
         <ul className="ta-batch-list">
-          {course.batches.map((b) => {
+          {course.batches.map((b, i) => {
             const off = Math.round((1 - b.price / b.was) * 100)
             const left = b.capacity - b.taken
             return (
-              <li key={b.name} className="ta-batch">
+              <li key={b.name} className="ta-batch" data-reveal style={revealDelay(i, 80)}>
                 <div className="ta-batch-top">
                   <span className={`ta-mode ta-mode--${b.mode.toLowerCase()}`}>{b.mode}</span>
                   <span className="ta-off">{off}% off</span>
