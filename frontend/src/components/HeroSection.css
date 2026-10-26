@@ -4,10 +4,15 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+/* Full-width hero wrapper — same fluid gutter as .ta-section__wrap, so the
+   headline, CTAs, social proof and the rotating banner cards all sit on the
+   same left/right edge as the sections below (no 1200px cap, no dead
+   gutters on wide viewports). */
 .ta-hero__inner {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 40px 12px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 40px clamp(16px, 5vw, 72px);
   display: grid;
   gap: 32px;
   grid-template-columns: 1fr;
@@ -16,9 +21,19 @@
 
 @media (min-width: 900px) {
   .ta-hero__inner {
-    grid-template-columns: 0.75fr 1.25fr;
-    padding: 64px 20px 88px;
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+    padding: 64px clamp(24px, 5vw, 72px) 88px;
   }
+
+  /* Carousel column stretches with the page but is capped so the 4:3
+     banner doesn't balloon on ultrawide screens — it stays flush with the
+     right gutter, mirroring the text column on the left. */
+  .ta-hero__media {
+    width: 100%;
+    max-width: 1040px;
+    justify-self: end;
+  }
+
   .ta-hero__frame {
     aspect-ratio: 4 / 3;
   }
