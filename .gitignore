@@ -11,3 +11,5 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+# OpenCode — locally installed third-party skills (uipro init --ai opencode)
+.opencode/skills/
