@@ -2,17 +2,37 @@
 .ta-section { background: var(--color-page); }
 .ta-section--tint { background: var(--color-section); }
 
+/* Full-width section wrapper — fluid gutter instead of a fixed 1200px cap,
+   so wide viewports have no dead gutters. Header text and the carousel
+   cards below it share the exact same left/right edge. */
 .ta-section__wrap {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 48px 12px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 48px clamp(16px, 5vw, 72px);
 }
 
 @media (min-width: 768px) {
-  .ta-section__wrap { padding: 72px 20px; }
+  .ta-section__wrap { padding: 72px clamp(24px, 5vw, 72px); }
 }
 
-.ta-section__narrow { max-width: 800px; }
+/* Prose-only blocks stay readable, centred inside the full-width wrapper. */
+.ta-section__narrow { max-width: 800px; margin-inline: auto; }
+
+/* Nested inside an inner page (.ta-page__body) the page wrapper already
+   supplies the gutter and the 1200px cap — drop the section's own gutter so
+   the heading/section content stays flush with the page-hero text. */
+.ta-page__body .ta-section__wrap {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* …but keep the readable prose cap when the wrapper *is* the narrow block. */
+.ta-page__body .ta-section__wrap.ta-section__narrow { max-width: 800px; }
+
+.ta-page__body .ta-section__narrow { margin-inline: 0; }
 
 .ta-section__kicker {
   margin: 0 0 8px;
@@ -47,8 +67,10 @@
   .ta-teacher-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* Wide viewports: cards keep a comfortable width and the grid grows in
+   columns instead of stretching 4 cards across the whole screen. */
 @media (min-width: 1024px) {
-  .ta-teacher-grid { grid-template-columns: repeat(4, 1fr); }
+  .ta-teacher-grid { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
 }
 
 .ta-teacher-card {
@@ -99,15 +121,12 @@
   align-items: start;
 }
 
-/* Infinite drift rows */
+/* Carousel rows sit flush with the section heading — no negative bleed, so
+   the first card's edge lines up cleanly with the kicker/heading text. */
 .ta-ig-rows {
   display: grid;
   gap: 8px;
-  margin: 0 -12px;
-}
-
-@media (min-width: 768px) {
-  .ta-ig-rows { margin: 0 -20px; }
+  margin: 0;
 }
 
 /* DepthCarousel wrap + active-teacher caption */
