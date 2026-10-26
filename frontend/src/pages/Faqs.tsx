@@ -8,7 +8,7 @@ export default function Faqs() {
       title="Frequently Asked Questions"
       lead="What students and parents ask us most."
     >
-      <FaqSection preview={false} />
+      <FaqSection preview={false} showHeader={false} />
     </Page>
   )
 }

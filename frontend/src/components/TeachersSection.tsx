@@ -58,20 +58,35 @@ function TeacherProfileCard({ teacher, intro }: { teacher: Teacher; intro: boole
 /** Home "Meet Our Teachers" — endless 3D drift field of ProfileCards.
  *  Row 1 is live; row 2 drifts the opposite way as pure decoration.
  *  The full /teachers page keeps the plain photo grid. */
-export default function TeachersSection({ preview = true }: { preview?: boolean }) {
+export default function TeachersSection({
+  preview = true,
+  showHeader = true,
+}: {
+  preview?: boolean
+  /** False when a parent page already prints this kicker/title (e.g. /teachers). */
+  showHeader?: boolean
+}) {
   return (
-    <section className="ta-section" aria-labelledby="ta-teachers-title">
+    <section
+      className="ta-section"
+      aria-labelledby={showHeader ? 'ta-teachers-title' : undefined}
+      aria-label={showHeader ? undefined : 'Meet Our Teachers'}
+    >
       <div className="ta-section__wrap">
-        <p className="ta-section__kicker" data-reveal style={revealDelay(0, 60)}>
-          Faculty · PRD T-01
-        </p>
-        <h2 id="ta-teachers-title" data-reveal style={revealDelay(1, 60)}>
-          Meet Our Teachers
-        </h2>
-        <p className="ta-section__lead" data-reveal style={revealDelay(2, 60)}>
-          Experienced, dedicated subject teachers who make tough concepts simple. Drift through
-          the faculty — drag a row, hover to pause.
-        </p>
+        {showHeader && (
+          <>
+            <p className="ta-section__kicker" data-reveal style={revealDelay(0, 60)}>
+              Faculty · PRD T-01
+            </p>
+            <h2 id="ta-teachers-title" data-reveal style={revealDelay(1, 60)}>
+              Meet Our Teachers
+            </h2>
+            <p className="ta-section__lead" data-reveal style={revealDelay(2, 60)}>
+              Experienced, dedicated subject teachers who make tough concepts simple. Drift through
+              the faculty — drag a row, hover to pause.
+            </p>
+          </>
+        )}
         {preview ? (
           <div className="ta-ig-rows">
             <InfiniteGallery

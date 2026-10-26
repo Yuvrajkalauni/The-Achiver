@@ -8,7 +8,7 @@ export default function Teachers() {
       title="Meet Our Teachers"
       lead="Learn from experienced, dedicated subject teachers who make tough concepts simple."
     >
-      <TeachersSection preview={false} />
+      <TeachersSection preview={false} showHeader={false} />
     </Page>
   )
 }
