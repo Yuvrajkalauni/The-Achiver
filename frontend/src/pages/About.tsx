@@ -101,15 +101,23 @@ export default function About() {
         </ol>
       </section>
 
-      <div className="ta-stats-band" role="region" aria-label="Institute at a glance">
-        {stats.map((s, i) => (
-          <div key={s.label} data-reveal style={revealDelay(i, 90)}>
-            <strong>
-              <CountUp value={s.value} />
-            </strong>
-            <span>{s.label}</span>
-          </div>
-        ))}
+      <div className="ta-stats-band-wrap">
+        <div className="ta-stats-band" role="region" aria-label="Institute at a glance">
+          {stats.map((s, i) => (
+            <div
+              className="ta-stats-band__item"
+              key={s.label}
+              data-reveal
+              style={revealDelay(i, 90)}
+            >
+              <strong className="ta-stats-band__value">
+                <CountUp value={s.value} />
+                <span className="ta-stats-band__plus">+</span>
+              </strong>
+              <span className="ta-stats-band__label">{s.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       <section aria-labelledby="ta-about-visit" className="ta-about-block">
