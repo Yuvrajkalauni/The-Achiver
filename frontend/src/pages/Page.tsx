@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { ShaderBackground } from '../components/ShaderBackground'
 import './Page.css'
 
 export default function Page({
@@ -14,7 +15,8 @@ export default function Page({
 }) {
   return (
     <main className="ta-page">
-      <section className="ta-page__hero">
+      <section className="ta-page__hero ta-page__hero--shader">
+        <ShaderBackground className="ta-page__shader" />
         <div className="ta-page__wrap">
           <p className="ta-page__kicker">{kicker}</p>
           <h1>{title}</h1>

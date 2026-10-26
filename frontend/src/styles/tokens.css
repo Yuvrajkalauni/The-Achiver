@@ -49,4 +49,22 @@
   --duration-base: 200ms;
   --duration-slow: 320ms;
   --easing: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Scrims over the animated ShaderBackground canvas — they keep copy
+     contrast intact: the home hero fades out towards the (image) right,
+     inner-page heroes stay dark because their text is white. */
+  --hero-scrim: linear-gradient(
+    105deg,
+    rgba(255, 255, 255, 0.97) 0%,
+    rgba(255, 255, 255, 0.9) 45%,
+    rgba(255, 255, 255, 0.5) 72%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  --hero-scrim-flat: rgba(255, 255, 255, 0.88);
+  --page-hero-scrim: linear-gradient(
+    105deg,
+    rgba(6, 39, 32, 0.94) 0%,
+    rgba(6, 39, 32, 0.88) 50%,
+    rgba(6, 39, 32, 0.74) 100%
+  );
 }

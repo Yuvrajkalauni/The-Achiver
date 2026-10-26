@@ -1,7 +1,34 @@
 /* Hero-1 equivalent — two-column + social proof, theme tokens only. */
 .ta-hero {
+  position: relative;
+  overflow: hidden;
   background: var(--gradient-soft);
   border-bottom: 1px solid var(--color-border);
+}
+
+/* 21st.dev "Mesh drift" shader — fills the whole hero behind copy + banner. */
+.ta-hero__shader {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Scrim painted above the canvas (same z-index, later in paint order) and
+   below the copy: fades out to the right so the animation reads through,
+   while keeping headline/CTA/proof contrast AA in both themes. */
+.ta-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--hero-scrim);
+  pointer-events: none;
+}
+
+/* Stacked layout: copy sits above the banner, so wash the whole block. */
+@media (max-width: 899px) {
+  .ta-hero::after { background: var(--hero-scrim-flat); }
 }
 
 /* Full-width hero wrapper — same fluid gutter as .ta-section__wrap, so the
@@ -9,6 +36,8 @@
    same left/right edge as the sections below (no 1200px cap, no dead
    gutters on wide viewports). */
 .ta-hero__inner {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: none;
   margin: 0;

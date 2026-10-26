@@ -1,8 +1,32 @@
 .ta-page { background: var(--color-page); min-height: 60vh; }
 .ta-page__hero {
+  position: relative;
+  overflow: hidden;
   background: var(--gradient-hero-dark);
   color: #fff;
   padding: 48px 0;
+}
+
+/* 21st.dev shader behind the dark banner; the scrim keeps white text AA. */
+.ta-page__shader {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ta-page__hero--shader::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--page-hero-scrim);
+  pointer-events: none;
+}
+
+.ta-page__hero .ta-page__wrap {
+  position: relative;
+  z-index: 1;
 }
 .ta-page__wrap { max-width: var(--container); margin: 0 auto; padding: 0 12px; }
 @media (min-width: 768px) { .ta-page__wrap { padding: 0 20px; } }

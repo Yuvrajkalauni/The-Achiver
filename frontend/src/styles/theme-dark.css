@@ -14,6 +14,16 @@
   --color-link-hover: #ffffff;
   --color-border: rgba(255, 255, 255, 0.14);
   --color-border-strong: rgba(255, 255, 255, 0.28);
+
+  /* Shader scrims flipped for dark mode (light text needs a dark wash). */
+  --hero-scrim: linear-gradient(
+    105deg,
+    rgba(7, 30, 25, 0.96) 0%,
+    rgba(7, 30, 25, 0.9) 45%,
+    rgba(7, 30, 25, 0.55) 72%,
+    rgba(7, 30, 25, 0.18) 100%
+  );
+  --hero-scrim-flat: rgba(7, 30, 25, 0.88);
 }
 
 /* Surfaces */

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ShaderBackground } from './ShaderBackground'
 import './HeroSection.css'
-
 const SLIDES = [
   {
     src: '/hero/hero-1.jpg',
@@ -42,6 +42,7 @@ export default function HeroSection() {
 
   return (
     <section className="ta-hero" aria-labelledby="ta-hero-title">
+      <ShaderBackground className="ta-hero__shader" />
       <div className="ta-hero__inner">
         <div className="ta-hero__copy">
           <p className="ta-hero__eyebrow">Admissions open — SEE • Class 11/12 • IOE • CEE</p>
