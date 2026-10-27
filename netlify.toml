@@ -1,0 +1,42 @@
+# Netlify — The Achievers Project
+# Frontend: React + Vite (hosted on Netlify)
+# Backend:  Django REST Framework (hosted on Render — see render.yaml)
+
+[build]
+  base    = "frontend"          # Netlify cd's into frontend/ before running command
+  command = "npm ci && npm run build"
+  publish = "dist"              # relative to base (frontend/dist)
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Set VITE_API_BASE_URL in Netlify → Site Settings → Environment Variables
+  # e.g. https://the-achievers-api.onrender.com
+
+# ── Redirects ──────────────────────────────────────────────────────────────
+# Legacy URL kept alive
+[[redirects]]
+  from   = "/tests/free"
+  to     = "/mock-test/free"
+  status = 301
+
+# SPA fallback — MUST be last so real files are served first
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# ── Security headers ────────────────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options    = "nosniff"
+    X-Frame-Options           = "DENY"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Permissions-Policy        = "camera=(), microphone=(), geolocation=()"
+
+# Hashed assets — cache forever
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

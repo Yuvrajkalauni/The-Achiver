@@ -2,14 +2,24 @@
 import os
 from pathlib import Path
 
+import dj_database_url
 from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-insecure-key-change-me")
-DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
+DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").split(",")
+# ── Allowed Hosts ────────────────────────────────────────────────────────────
+# Build the list from the ALLOWED_HOSTS env var, then append Render's
+# auto-assigned external hostname so no manual update is needed after deploy.
+_allowed = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").split(",")
+_render_host = os.environ.get("RENDER_EXTERNAL_HOSTNAME")  # set automatically by Render
+if _render_host and _render_host not in _allowed:
+    _allowed.append(_render_host)
+ALLOWED_HOSTS = [h.strip() for h in _allowed if h.strip()]
+
+# ── CORS / CSRF ──────────────────────────────────────────────────────────────
 CSRF_TRUSTED_ORIGINS = os.environ.get(
     "CSRF_TRUSTED_ORIGINS",
     "http://localhost:5173,http://127.0.0.1:5173",
@@ -69,19 +79,27 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# ── Database ─────────────────────────────────────────────────────────────────
+# Production: set DATABASE_URL to a PostgreSQL connection string in your
+# hosting platform's environment variables (e.g. Render's managed Postgres).
+# Development: falls back to SQLite when DATABASE_URL is not set.
+_database_url = os.environ.get("DATABASE_URL")
+if _database_url:
+    DATABASES = {"default": dj_database_url.config(default=_database_url, conn_max_age=600)}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
-# Prod: DATABASE_URL (Postgres 16) via env — wired in Phase 0 hosting decision.
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kathmandu"
 USE_I18N = True
 USE_TZ = True
 
+# ── Static files (WhiteNoise) ─────────────────────────────────────────────────
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STORAGES = {
@@ -89,6 +107,7 @@ STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
 }
 
+# ── Django REST Framework ─────────────────────────────────────────────────────
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "DEFAULT_AUTHENTICATION_CLASSES": [

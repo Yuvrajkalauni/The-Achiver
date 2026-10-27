@@ -1,0 +1,59 @@
+# render.yaml — Render.com Blueprint for The Achievers backend
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Deploy steps:
+#   1. Push this repo to GitHub
+#   2. Go to https://dashboard.render.com/new/blueprint
+#   3. Connect your GitHub repo — Render will read this file automatically
+#   4. Set DJANGO_SECRET_KEY in the Render dashboard (use a long random string)
+#   5. After first deploy, run: python manage.py createsuperuser  (via Render shell)
+
+services:
+  - type: web
+    name: the-achievers-api
+    runtime: python
+    region: singapore          # closest free-tier region to Nepal
+    plan: free                 # upgrade to starter ($7/mo) for always-on
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
+    healthCheckPath: /api/v1/health/
+
+    envVars:
+      # ── Required: set this in the Render dashboard, NOT here ────────────────
+      - key: DJANGO_SECRET_KEY
+        sync: false            # Render will prompt you for this value
+
+      # ── Auto-wired from the database below ──────────────────────────────────
+      - key: DATABASE_URL
+        fromDatabase:
+          name: the-achievers-db
+          property: connectionString
+
+      # ── Auto-set by Render ──────────────────────────────────────────────────
+      - key: RENDER_EXTERNAL_HOSTNAME
+        fromService:
+          type: web
+          name: the-achievers-api
+          property: host
+
+      # ── App config ──────────────────────────────────────────────────────────
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: ALLOWED_HOSTS
+        value: "localhost,127.0.0.1"   # RENDER_EXTERNAL_HOSTNAME appended automatically by settings.py
+      # Set CORS_ALLOWED_ORIGINS + CSRF_TRUSTED_ORIGINS to your Netlify URL
+      # after your first deploy, e.g.:
+      #   CORS_ALLOWED_ORIGINS=https://the-achievers.netlify.app
+      #   CSRF_TRUSTED_ORIGINS=https://the-achievers.netlify.app
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+
+databases:
+  - name: the-achievers-db
+    plan: free                 # 90-day free PostgreSQL on Render
+    region: singapore
+    databaseName: achievers
+    user: achievers
